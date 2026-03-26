@@ -350,39 +350,6 @@
             <div class="sub-bar" style="background:var(--red)"></div>
             <span class="sub-title">Active Bugs</span>
           </div>
-          <div class="bug-item">
-            <div class="pulse-dot orange"></div>
-            <div style="flex:1">
-              <div class="bug-title">S2-Pro model outputs garbled audio on long inputs (&gt;60s)</div>
-              <div class="bug-meta">
-                <span class="bug-badge bb-fixing">Fixing</span>
-                <span class="bug-num">#42</span>
-                <span class="bug-date">Jun 10</span>
-              </div>
-            </div>
-          </div>
-          <div class="bug-item">
-            <div class="pulse-dot yellow"></div>
-            <div style="flex:1">
-              <div class="bug-title">API returns 502 intermittently during peak hours (UTC 14–18)</div>
-              <div class="bug-meta">
-                <span class="bug-badge bb-investigating">Investigating</span>
-                <span class="bug-num">#39</span>
-                <span class="bug-date">Jun 9</span>
-              </div>
-            </div>
-          </div>
-          <div class="bug-item">
-            <div class="pulse-dot teal"></div>
-            <div style="flex:1">
-              <div class="bug-title">Voice clone upload silently fails on files &gt; 10 MB</div>
-              <div class="bug-meta">
-                <span class="bug-badge bb-testing">Testing</span>
-                <span class="bug-num">#35</span>
-                <span class="bug-date">Jun 8</span>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Roadmap -->
@@ -517,6 +484,8 @@
     document.querySelectorAll('.prog-bar').forEach(bar => {
       observer.observe(bar);
     });
+
+    fetchBugs();
   });
 
   async function checkFishStatus() {
@@ -572,6 +541,75 @@
         <div style="margin-top: 10px; font-size: 10px; color: var(--text4);">Last updated: ${new Date().toLocaleTimeString()}</div>
       `;
     }, 2000);
+  }
+
+  // Fetch bugs from Fish Audio GitHub repo
+  async function fetchBugs() {
+    try {
+      const response = await fetch('https://api.github.com/repos/fishaudio/fish-speech/issues?state=open');
+      const issues = await response.json();
+      
+      // Find the bugs sub-section
+      const bugSubSection = [...document.querySelectorAll('.sub-section')].find(s => s.querySelector('.sub-title').textContent.includes('Active Bugs'));
+      if (!bugSubSection) return;
+      
+      const subTitle = bugSubSection.querySelector('.sub-title');
+      subTitle.textContent = `Active Bugs (${issues.length})`;
+      
+      // Remove existing bug items
+      bugSubSection.querySelectorAll('.bug-item').forEach(item => item.remove());
+      
+      // Add new bug items (limit to 10 for display)
+      issues.slice(0, 10).forEach(issue => {
+        const bugItem = document.createElement('div');
+        bugItem.className = 'bug-item';
+        
+        const pulseDot = document.createElement('div');
+        pulseDot.className = 'pulse-dot yellow'; // Default color
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.style.flex = '1';
+        
+        const bugTitle = document.createElement('div');
+        bugTitle.className = 'bug-title';
+        bugTitle.textContent = issue.title;
+        
+        const bugMeta = document.createElement('div');
+        bugMeta.className = 'bug-meta';
+        
+        const bugBadge = document.createElement('span');
+        bugBadge.className = 'bug-badge bb-investigating'; // Default badge
+        bugBadge.textContent = 'Open';
+        
+        const bugNum = document.createElement('span');
+        bugNum.className = 'bug-num';
+        bugNum.textContent = `#${issue.number}`;
+        
+        const bugDate = document.createElement('span');
+        bugDate.className = 'bug-date';
+        bugDate.textContent = new Date(issue.created_at).toLocaleDateString();
+        
+        bugMeta.appendChild(bugBadge);
+        bugMeta.appendChild(bugNum);
+        bugMeta.appendChild(bugDate);
+        
+        contentDiv.appendChild(bugTitle);
+        contentDiv.appendChild(bugMeta);
+        
+        bugItem.appendChild(pulseDot);
+        bugItem.appendChild(contentDiv);
+        
+        bugSubSection.appendChild(bugItem);
+      });
+    } catch (error) {
+      console.error('Failed to fetch bugs:', error);
+      // Optionally show an error message
+      const bugSubSection = [...document.querySelectorAll('.sub-section')].find(s => s.querySelector('.sub-title').textContent.includes('Active Bugs'));
+      if (bugSubSection) {
+        const subTitle = bugSubSection.querySelector('.sub-title');
+        subTitle.textContent = 'Active Bugs (Unable to load)';
+      }
+    }
   }
 </script>
 </body>
