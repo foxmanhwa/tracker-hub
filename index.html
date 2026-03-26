@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tracker Hub by Leon</title>
+<title>Tracker Hub - Universal Tracking Platform</title>
+<meta name="description" content="Track bugs, features, and system status across any website. Connect external services, monitor performance, and stay updated with real-time data.">
+<meta name="keywords" content="tracker, monitoring, bugs, features, system status, API monitoring, website tracking">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -55,6 +58,18 @@
   .btn-secondary:hover{background:var(--bg5);border-color:var(--border2)}
   .btn-danger{background:var(--red);color:white}
   .btn-danger:hover{background:rgba(248,113,113,.8)}
+
+  /* AUTHENTICATION */
+  .auth-tabs{display:flex;border-bottom:1px solid var(--border)}
+  .auth-tab{padding:12px 24px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;border-bottom:2px solid transparent;transition:all .2s}
+  .auth-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+  .auth-tab:hover{color:var(--text)}
+  .auth-content{display:none}
+  .auth-content.active{display:block}
+  .oauth-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--bg4);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;width:100%;transition:all .2s;text-decoration:none}
+  .oauth-btn:hover{background:var(--bg5);border-color:var(--border2);transform:translateY(-1px)}
+  .google-btn:hover{border-color:#4285f4}
+  .discord-btn:hover{border-color:#5865f2}
 
   /* GRID */
   .grid{display:grid;gap:16px}
@@ -289,6 +304,12 @@
   .particle:nth-child(4){width:5px;height:5px;background:rgba(251,146,60,.3);top:80%;left:30%;animation-duration:22s}
   .particle:nth-child(5){width:4px;height:4px;background:rgba(244,114,182,.3);top:10%;left:70%;animation-duration:28s}
 
+  /* Additional floating elements */
+  .floating-shape{position:absolute;border-radius:50%;pointer-events:none;opacity:.1}
+  .shape-1{width:100px;height:100px;background:linear-gradient(45deg,rgba(34,211,238,.1),rgba(167,139,250,.1));top:10%;right:10%;animation:gentle-float 25s ease-in-out infinite}
+  .shape-2{width:60px;height:60px;background:linear-gradient(45deg,rgba(74,222,128,.1),rgba(244,114,182,.1));bottom:20%;left:15%;animation:gentle-float 20s ease-in-out infinite reverse}
+  .shape-3{width:80px;height:80px;background:linear-gradient(45deg,rgba(251,146,60,.1),rgba(34,211,238,.1));top:60%;left:5%;animation:gentle-float 30s ease-in-out infinite}
+
   @keyframes float {
     0%, 100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
     33% { transform: translateX(-50%) translateY(-20px) rotate(120deg); }
@@ -306,6 +327,11 @@
     10% { opacity: 1; }
     90% { opacity: 1; }
     100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+  }
+
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(180deg); }
   }
 
   /* FILTER hidden state */
@@ -345,12 +371,85 @@
     .trackers-grid{grid-template-columns:1fr}
     nav{flex-wrap:wrap;gap:10px}
   }
+
+  /* DASHBOARD STYLES */
+  .welcome-section{margin-bottom:32px}
+  .welcome-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+  .welcome-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .welcome-subtitle{color:var(--text2);font-size:16px}
+  .welcome-time{text-align:right}
+  .time-display{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--cyan)}
+  .time-label{color:var(--text3);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+
+  /* OVERVIEW CARDS */
+  .overview-section{margin-bottom:32px}
+  .overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .overview-card{display:flex;align-items:center;gap:16px;padding:20px;background:linear-gradient(135deg,var(--bg3),var(--bg4));border-radius:12px;border:1px solid var(--border);transition:all .3s}
+  .overview-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.2);border-color:var(--cyan)}
+  .overview-icon{font-size:32px;width:60px;height:60px;border-radius:12px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);display:flex;align-items:center;justify-content:center}
+  .overview-content{flex:1}
+  .overview-value{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--cyan);line-height:1}
+  .overview-label{color:var(--text3);font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+
+  /* DASHBOARD GRID */
+  .dashboard-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:32px}
+  .dashboard-left,.dashboard-right{display:flex;flex-direction:column;gap:24px}
+
+  /* QUICK ACTIONS */
+  .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .action-btn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px;border-radius:12px;border:none;background:var(--bg4);color:var(--text);cursor:pointer;transition:all .2s;text-decoration:none}
+  .action-btn:hover{background:var(--bg5);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+  .action-btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:white}
+  .action-btn.primary:hover{box-shadow:0 4px 16px rgba(34,211,238,.3)}
+  .action-icon{font-size:24px}
+  .action-text{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+
+  /* CHART */
+  .chart-container{margin-top:16px;padding:16px;background:var(--bg4);border-radius:8px;border:1px solid var(--border)}
+  #dataChart{max-width:100%;height:auto}
+
+  /* SITES PREVIEW */
+  .sites-preview{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+  .site-preview-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);transition:all .2s}
+  .site-preview-card:hover{border-color:var(--border2);background:var(--bg5)}
+  .site-preview-icon{font-size:20px;width:40px;height:40px;border-radius:8px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);display:flex;align-items:center;justify-content:center}
+  .site-preview-content{flex:1}
+  .site-preview-name{font-size:14px;font-weight:600;color:var(--text)}
+  .site-preview-url{font-size:11px;color:var(--text3);margin-top:2px}
+  .site-preview-status{margin-left:auto;text-align:right}
+  .site-preview-status-text{font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+  .site-preview-time{font-size:10px;color:var(--text4);margin-top:2px}
+
+  /* EMPTY STATE */
+  .empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+  .empty-icon{font-size:48px;margin-bottom:16px}
+  .empty-state h3{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px}
+  .empty-state p{font-size:14px;margin-bottom:24px}
+
+  /* ACTIVITY FEED */
+  .activity-feed{max-height:400px;overflow-y:auto}
+  .activity-item{display:flex;gap:12px;padding:12px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);margin-bottom:8px}
+  .activity-icon{font-size:16px;width:32px;height:32px;border-radius:6px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .activity-content{flex:1}
+  .activity-text{font-size:13px;color:var(--text);line-height:1.4}
+  .activity-time{font-size:11px;color:var(--text4);margin-top:4px}
+
+  /* STATUS INDICATORS */
+  .status-indicators{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+  .status-item{display:flex;align-items:center;gap:12px;padding:8px 0}
+  .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .status-dot.green{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.5)}
+  .status-dot.yellow{background:var(--yellow);box-shadow:0 0 6px rgba(250,204,21,.5)}
+  .status-dot.red{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,.5)}
+  .status-label{flex:1;color:var(--text2);font-size:14px}
+  .status-value{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);text-transform:uppercase}
 </style>
 </head>
 <body>
 <div class="glow-bg">
   <div class="glow-1"></div><div class="glow-2"></div><div class="glow-3"></div>
   <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="floating-shape shape-1"></div><div class="floating-shape shape-2"></div><div class="floating-shape shape-3"></div>
 </div>
 <div class="cursor-glow" id="cursor-glow"></div>
 
@@ -363,7 +462,7 @@
       <div class="brand-icon animate-float">📡</div>
       <div>
         <div class="brand-name">Tracker Hub</div>
-        <div class="brand-sub">by Leon · Milo53</div>
+        <div class="brand-sub">Universal tracking platform</div>
       </div>
     </div>
     <div style="display:flex;gap:12px">
@@ -385,14 +484,14 @@
   <!-- HOME TAB -->
   <div id="home-tab" class="tab-content active">
     <div class="hero animate-slideUp">
-      <div class="hero-eyebrow">Community Source of Truth <span class="hero-line"></span></div>
-      <h1>One hub.<br><span>Every tracker.</span></h1>
-      <p class="hero-sub">Bug reports, roadmaps, and system status for AI tools and gaming communities — all in one place. No more digging through Discord.</p>
+      <div class="hero-eyebrow">Universal Tracking Platform <span class="hero-line"></span></div>
+      <h1>Track <span>anything.</span><br>Monitor everything.</h1>
+      <p class="hero-sub">Connect to any website, API, or service. Track bugs, features, system status, and performance metrics across all your favorite platforms — all in one dashboard.</p>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-num">1</div><div class="stat-label">Live tracker</div></div>
-        <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Coming soon</div></div>
+        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Compatible sites</div></div>
+        <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Data types</div></div>
         <div class="stat"><div class="stat-num" id="connected-count">0</div><div class="stat-label">Connected sites</div></div>
-        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Expandable</div></div>
+        <div class="stat"><div class="stat-num">Real-time</div><div class="stat-label">Updates</div></div>
       </div>
     </div>
 
@@ -407,10 +506,10 @@
 
       <div class="tracker-expanded">
         <div class="tracker-exp-header">
-          <div class="exp-icon">🐟</div>
+          <div class="exp-icon">�</div>
           <div style="flex:1">
-            <div class="exp-title">Fish Audio</div>
-            <div class="exp-sub">AI voice synthesis platform · fish.audio</div>
+            <div class="exp-title">Tracker Hub</div>
+            <div class="exp-sub">Universal tracking platform · trackerhub.com</div>
           </div>
           <span class="card-badge badge-live">Live</span>
         </div>
@@ -499,20 +598,40 @@
     <div class="tracker-section animate-fadeIn" data-cat="all">
       <div class="section-header">
         <div class="section-bar" style="background:var(--border2)"></div>
-        <h2>Coming Soon</h2>
+        <h2>Integration Examples</h2>
         <div class="section-divider"></div>
-        <span class="section-meta">In the pipeline</span>
+        <span class="section-meta">What you can connect</span>
       </div>
       <div class="coming-grid">
         <div class="coming-card" data-cat="ai">
-          <div class="coming-icon">🎵</div>
-          <div class="coming-title">Suno AI Tracker</div>
-          <div class="coming-sub">Bug reports, model updates, and credit system changes for Suno.</div>
+          <div class="coming-icon">🤖</div>
+          <div class="coming-title">AI Platforms</div>
+          <div class="coming-sub">Connect to OpenAI, Anthropic, Hugging Face, or any AI service with API access.</div>
+        </div>
+        <div class="coming-card" data-cat="dev">
+          <div class="coming-icon">💻</div>
+          <div class="coming-title">Development Tools</div>
+          <div class="coming-sub">GitHub repos, Jira, Linear, Trello — track issues, features, and project status.</div>
         </div>
         <div class="coming-card" data-cat="gaming">
           <div class="coming-icon">🎮</div>
-          <div class="coming-title">Gaming Community #1</div>
-          <div class="coming-sub">Patch notes, known bugs, and server status. Game TBD.</div>
+          <div class="coming-title">Gaming Platforms</div>
+          <div class="coming-sub">Steam, Epic Games, Discord servers — monitor updates, patches, and community status.</div>
+        </div>
+        <div class="coming-card" data-cat="web">
+          <div class="coming-icon">🌐</div>
+          <div class="coming-title">Web Services</div>
+          <div class="coming-sub">Any website with public APIs, status pages, or RSS feeds for comprehensive monitoring.</div>
+        </div>
+        <div class="coming-card" data-cat="social">
+          <div class="coming-icon">📱</div>
+          <div class="coming-title">Social Platforms</div>
+          <div class="coming-sub">Twitter, Reddit, Discord — track mentions, updates, and community discussions.</div>
+        </div>
+        <div class="coming-card" data-cat="custom">
+          <div class="coming-icon">🔧</div>
+          <div class="coming-title">Custom Integrations</div>
+          <div class="coming-sub">Build your own connectors or use our plugin system for specialized tracking needs.</div>
         </div>
       </div>
     </div>
@@ -530,29 +649,154 @@
     </div>
 
     <div id="dashboard-content" style="display:none;">
-      <div class="card animate-slideUp">
-        <div class="card-header">
+      <!-- WELCOME SECTION -->
+      <div class="welcome-section animate-slideUp">
+        <div class="welcome-header">
           <div>
-            <h2 class="card-title">Website Integration</h2>
-            <p class="card-subtitle">Connect and monitor external websites</p>
+            <h1 class="welcome-title">Welcome back, <span id="welcome-name">User</span> 👋</h1>
+            <p class="welcome-subtitle">Here's what's happening with your tracked data today</p>
           </div>
-          <button class="btn btn-primary" onclick="showAddSiteModal()">Add Website</button>
-        </div>
-
-        <div class="grid grid-2" id="sites-overview">
-          <div class="metric">
-            <div class="metric-value" id="total-sites">0</div>
-            <div class="metric-label">Connected Sites</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value" id="total-bugs">0</div>
-            <div class="metric-label">Total Bugs</div>
+          <div class="welcome-time">
+            <div class="time-display" id="current-time">Loading...</div>
+            <div class="time-label">Last updated</div>
           </div>
         </div>
+      </div>
 
-        <div id="sites-list">
-          <h3>Connected Websites</h3>
-          <div class="grid grid-3" id="sites-grid"></div>
+      <!-- QUICK OVERVIEW -->
+      <div class="overview-section animate-slideUp">
+        <div class="overview-grid">
+          <div class="overview-card">
+            <div class="overview-icon">🌐</div>
+            <div class="overview-content">
+              <div class="overview-value" id="overview-sites">0</div>
+              <div class="overview-label">Connected Sites</div>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="overview-icon">🟢</div>
+            <div class="overview-content">
+              <div class="overview-value" id="overview-active">0</div>
+              <div class="overview-label">Active Connections</div>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="overview-icon">🔄</div>
+            <div class="overview-content">
+              <div class="overview-value" id="overview-sync">Never</div>
+              <div class="overview-label">Last Sync</div>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="overview-icon">📊</div>
+            <div class="overview-content">
+              <div class="overview-value" id="overview-data">0</div>
+              <div class="overview-label">Data Points</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN DASHBOARD GRID -->
+      <div class="dashboard-grid">
+        <!-- LEFT COLUMN -->
+        <div class="dashboard-left">
+          <!-- QUICK ACTIONS -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">Quick Actions</h2>
+            </div>
+            <div class="quick-actions">
+              <button class="action-btn primary" onclick="showAddSiteModal()">
+                <span class="action-icon">➕</span>
+                <span class="action-text">Connect New Website</span>
+              </button>
+              <button class="action-btn secondary" onclick="syncAllSites()">
+                <span class="action-icon">🔄</span>
+                <span class="action-text">Sync All Sites</span>
+              </button>
+              <button class="action-btn secondary" onclick="showReports()">
+                <span class="action-icon">📊</span>
+                <span class="action-text">View Reports</span>
+              </button>
+              <button class="action-btn secondary" onclick="showSettings()">
+                <span class="action-icon">⚙️</span>
+                <span class="action-text">Settings</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- CHART SECTION -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">Data Trends</h2>
+              <p class="card-subtitle">Last 7 days activity</p>
+            </div>
+            <div class="chart-container">
+              <canvas id="dataChart" width="400" height="200"></canvas>
+            </div>
+          </div>
+
+          <!-- CONNECTED SITES PREVIEW -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">Connected Websites</h2>
+              <p class="card-subtitle" id="sites-count">0 sites connected</p>
+            </div>
+            <div id="sites-preview">
+              <!-- Sites will be populated here -->
+            </div>
+            <div class="empty-state" id="sites-empty" style="display:none;">
+              <div class="empty-icon">🚀</div>
+              <h3>No websites connected yet</h3>
+              <p>Start tracking your data by connecting your first site.</p>
+              <button class="btn btn-primary" onclick="showAddSiteModal()">Connect Website</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="dashboard-right">
+          <!-- RECENT ACTIVITY -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">Recent Activity</h2>
+              <p class="card-subtitle">Live system updates</p>
+            </div>
+            <div class="activity-feed" id="activity-feed">
+              <div class="activity-item">
+                <div class="activity-icon">🔄</div>
+                <div class="activity-content">
+                  <div class="activity-text">System initialized</div>
+                  <div class="activity-time">Just now</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SYSTEM STATUS -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">System Status</h2>
+            </div>
+            <div class="status-indicators">
+              <div class="status-item">
+                <div class="status-dot green"></div>
+                <span class="status-label">API Services</span>
+                <span class="status-value">Operational</span>
+              </div>
+              <div class="status-item">
+                <div class="status-dot green"></div>
+                <span class="status-label">Data Processing</span>
+                <span class="status-value">Active</span>
+              </div>
+              <div class="status-item">
+                <div class="status-dot yellow"></div>
+                <span class="status-label">Background Sync</span>
+                <span class="status-value">Running</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -595,8 +839,13 @@
 
   <!-- FOOTER -->
   <footer style="margin-top:64px;padding-top:32px;border-top:1px solid var(--border);text-align:center">
-    <div class="footer-note">📡 Tracker Hub — unofficial community resource — not affiliated with any tracked platform</div>
-    <div class="footer-credit">built by <a href="https://github.com/Milo53">Leon</a> · <a href="https://github.com/Milo53/tracker-hub">GitHub</a></div>
+    <div class="footer-note">© 2026 Tracker Hub. All rights reserved.</div>
+    <div class="footer-links" style="margin-top:16px;display:flex;gap:24px;justify-content:center;flex-wrap:wrap">
+      <a href="#" onclick="showLegalModal('terms')" style="color:var(--text3);text-decoration:none;font-size:14px">Terms of Service</a>
+      <a href="#" onclick="showLegalModal('privacy')" style="color:var(--text3);text-decoration:none;font-size:14px">Privacy Policy</a>
+      <a href="#" onclick="showLegalModal('disclaimer')" style="color:var(--text3);text-decoration:none;font-size:14px">Disclaimer</a>
+    </div>
+    <div class="footer-credit" style="margin-top:16px;color:var(--text4);font-size:12px">built by <a href="https://github.com/Milo53" style="color:var(--cyan);text-decoration:none">Leon</a> · <a href="https://github.com/Milo53/tracker-hub" style="color:var(--cyan);text-decoration:none">GitHub</a></div>
   </footer>
 
 </div>
@@ -606,20 +855,74 @@
 <div class="modal" id="login-modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="modal-title">Login</h2>
+      <h2 class="modal-title">Sign In</h2>
       <span class="modal-close" onclick="hideModal('login-modal')">&times;</span>
     </div>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" id="login-email" required>
+    
+    <div class="auth-tabs" style="display:flex;margin-bottom:24px;border-bottom:1px solid var(--border)">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    
+    <div id="login-tab" class="auth-content">
+      <div class="oauth-buttons" style="margin-bottom:20px">
+        <button class="oauth-btn google-btn" onclick="oauthLogin('google')" style="width:100%;margin-bottom:8px">
+          <span>🔍</span> Continue with Google
+        </button>
+        <button class="oauth-btn discord-btn" onclick="oauthLogin('discord')" style="width:100%">
+          <span>💬</span> Continue with Discord
+        </button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" id="login-password" required>
+      
+      <div style="text-align:center;margin:16px 0;color:var(--text3);font-size:14px">or</div>
+      
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="login-email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="login-password" required>
+        </div>
+        <div id="login-error" class="error-message" style="color:var(--red);font-size:14px;margin-bottom:16px;display:none"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+      </form>
+    </div>
+    
+    <div id="signup-tab" class="auth-content" style="display:none">
+      <div class="oauth-buttons" style="margin-bottom:20px">
+        <button class="oauth-btn google-btn" onclick="oauthSignup('google')" style="width:100%;margin-bottom:8px">
+          <span>🔍</span> Sign up with Google
+        </button>
+        <button class="oauth-btn discord-btn" onclick="oauthSignup('discord')" style="width:100%">
+          <span>💬</span> Sign up with Discord
+        </button>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%">Login</button>
-    </form>
+      
+      <div style="text-align:center;margin:16px 0;color:var(--text3);font-size:14px">or</div>
+      
+      <form onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="signup-name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="signup-email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="signup-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-input" id="signup-confirm" required minlength="6">
+        </div>
+        <div id="signup-error" class="error-message" style="color:var(--red);font-size:14px;margin-bottom:16px;display:none"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -640,31 +943,49 @@
 <div class="modal" id="add-site-modal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2 class="modal-title">Add Website</h2>
+      <h2 class="modal-title">Connect External Website</h2>
       <span class="modal-close" onclick="hideModal('add-site-modal')">&times;</span>
+    </div>
+    <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:8px;padding:12px;margin-bottom:20px;font-size:13px;color:var(--text2)">
+      <strong>🔒 Important:</strong> Ensure you have proper authorization to access this website's data. Tracker Hub is not responsible for third-party data accuracy.
     </div>
     <form onsubmit="handleAddSite(event)">
       <div class="form-group">
         <label class="form-label">Website Name</label>
-        <input type="text" class="form-input" id="site-name" required>
+        <input type="text" class="form-input" id="site-name" placeholder="e.g., My Blog, Company API" required>
       </div>
       <div class="form-group">
         <label class="form-label">Website URL</label>
-        <input type="url" class="form-input" id="site-url" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">API Endpoint (optional)</label>
-        <input type="url" class="form-input" id="site-api">
+        <input type="url" class="form-input" id="site-url" placeholder="https://example.com" required>
       </div>
       <div class="form-group">
         <label class="form-label">Connection Method</label>
-        <select class="form-input" id="site-method">
-          <option value="url">URL Scraping</option>
-          <option value="api">API Integration</option>
-          <option value="plugin">Plugin</option>
+        <select class="form-input" id="site-method" onchange="toggleApiField()">
+          <option value="url">URL Scraping (Public data)</option>
+          <option value="api">API Integration (Requires API key)</option>
+          <option value="plugin">Plugin/Extension</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%">Add Website</button>
+      <div class="form-group" id="api-field" style="display:none">
+        <label class="form-label">API Key/Token (Optional)</label>
+        <input type="password" class="form-input" id="site-api" placeholder="Your API key for this service">
+        <small style="color:var(--text3);font-size:12px">API keys are stored securely and never shared</small>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data Types to Track</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px">
+            <input type="checkbox" id="track-bugs" checked> Bugs/Issues
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px">
+            <input type="checkbox" id="track-features"> Features
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px">
+            <input type="checkbox" id="track-status"> Status/Health
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">Connect Website</button>
     </form>
   </div>
 </div>
@@ -696,6 +1017,19 @@
       <span class="modal-close" onclick="hideModal('system-settings-modal')">&times;</span>
     </div>
     <div id="settings-content"></div>
+  </div>
+</div>
+
+<!-- LEGAL MODALS -->
+<div class="modal" id="legal-modal">
+  <div class="modal-content" style="max-width:700px">
+    <div class="modal-header">
+      <h2 class="modal-title" id="legal-title">Legal</h2>
+      <span class="modal-close" onclick="hideModal('legal-modal')">&times;</span>
+    </div>
+    <div id="legal-content" style="line-height:1.6">
+      <!-- Content will be populated by JavaScript -->
+    </div>
   </div>
 </div>
 
@@ -750,16 +1084,77 @@
 
   function showLoginModal() {
     document.getElementById('login-modal').classList.add('show');
+    switchAuthTab('login');
+  }
+
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-content').forEach(c => c.classList.remove('active'));
+    
+    document.querySelector(`[onclick="switchAuthTab('${tab}')"]`).classList.add('active');
+    document.getElementById(`${tab}-tab`).classList.add('active');
+    
+    // Clear any error messages
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('signup-error').style.display = 'none';
   }
 
   function hideModal(id) {
     document.getElementById(id).classList.remove('show');
   }
 
+  // OAuth Simulation (in real app, this would redirect to OAuth providers)
+  function oauthLogin(provider) {
+    // Simulate OAuth flow
+    const mockUser = {
+      id: Date.now(),
+      email: `${provider}_user@example.com`,
+      name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
+      provider: provider,
+      premium: false,
+      role: 'user'
+    };
+    
+    // Check if user already exists
+    const existingUser = users.find(u => u.email === mockUser.email);
+    if (existingUser) {
+      currentUser = existingUser;
+    } else {
+      users.push(mockUser);
+      currentUser = mockUser;
+    }
+    
+    saveData();
+    checkAuth();
+    updateUI();
+    hideModal('login-modal');
+    alert(`Welcome back! Signed in with ${provider.charAt(0).toUpperCase() + provider.slice(1)}.`);
+  }
+
+  function oauthSignup(provider) {
+    const mockUser = {
+      id: Date.now(),
+      email: `${provider}_user_${Date.now()}@example.com`,
+      name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
+      provider: provider,
+      premium: false,
+      role: 'user'
+    };
+    
+    users.push(mockUser);
+    currentUser = mockUser;
+    saveData();
+    checkAuth();
+    updateUI();
+    hideModal('login-modal');
+    alert(`Account created! Welcome to Tracker Hub.`);
+  }
+
   function handleLogin(event) {
     event.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+    const errorDiv = document.getElementById('login-error');
     
     const user = users.find(u => u.email === email && u.password === password);
     if (user) {
@@ -769,10 +1164,52 @@
       checkAuth();
       updateUI();
       hideModal('login-modal');
+      errorDiv.style.display = 'none';
       alert(`Welcome back, ${user.name}!`);
     } else {
-      alert('Invalid credentials');
+      errorDiv.textContent = 'Invalid email or password';
+      errorDiv.style.display = 'block';
     }
+  }
+
+  function handleSignup(event) {
+    event.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm').value;
+    const errorDiv = document.getElementById('signup-error');
+    
+    // Validation
+    if (password !== confirmPassword) {
+      errorDiv.textContent = 'Passwords do not match';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    if (users.some(u => u.email === email)) {
+      errorDiv.textContent = 'Email already exists';
+      errorDiv.style.display = 'block';
+      return;
+    }
+    
+    const newUser = {
+      id: Date.now(),
+      email,
+      password,
+      name,
+      premium: false,
+      role: 'user'
+    };
+    
+    users.push(newUser);
+    currentUser = newUser;
+    saveData();
+    checkAuth();
+    updateUI();
+    hideModal('login-modal');
+    errorDiv.style.display = 'none';
+    alert('Account created successfully! Welcome to Tracker Hub.');
   }
 
   function logout() {
@@ -790,13 +1227,15 @@
     document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    if (tabName === 'dashboard' && !isPremium) {
-      document.getElementById('dashboard-gate').style.display = 'block';
-      document.getElementById('dashboard-content').style.display = 'none';
-    } else if (tabName === 'dashboard') {
-      document.getElementById('dashboard-gate').style.display = 'none';
-      document.getElementById('dashboard-content').style.display = 'block';
-      loadDashboard();
+    if (tabName === 'dashboard') {
+      if (!isPremium) {
+        document.getElementById('dashboard-gate').style.display = 'block';
+        document.getElementById('dashboard-content').style.display = 'none';
+      } else {
+        document.getElementById('dashboard-gate').style.display = 'none';
+        document.getElementById('dashboard-content').style.display = 'block';
+        loadDashboard();
+      }
     }
     
     if (tabName === 'admin' && (!currentUser || currentUser.role !== 'admin')) {
@@ -838,39 +1277,89 @@
   // Website Integration
   function showAddSiteModal() {
     document.getElementById('add-site-modal').classList.add('show');
+    toggleApiField(); // Initialize field visibility
+  }
+
+  function toggleApiField() {
+    const method = document.getElementById('site-method').value;
+    const apiField = document.getElementById('api-field');
+    apiField.style.display = method === 'api' ? 'block' : 'none';
   }
 
   function handleAddSite(event) {
     event.preventDefault();
-    if (!isPremium) return;
+    if (!isPremium) {
+      alert('Premium subscription required to connect websites');
+      showPaymentModal();
+      return;
+    }
     
-    const name = document.getElementById('site-name').value;
-    const url = document.getElementById('site-url').value;
+    const name = document.getElementById('site-name').value.trim();
+    const url = document.getElementById('site-url').value.trim();
     const api = document.getElementById('site-api').value;
     const method = document.getElementById('site-method').value;
+    
+    const trackBugs = document.getElementById('track-bugs').checked;
+    const trackFeatures = document.getElementById('track-features').checked;
+    const trackStatus = document.getElementById('track-status').checked;
+    
+    if (!name || !url) {
+      alert('Please enter both website name and URL.');
+      return;
+    }
+    
+    // Check if URL is already connected
+    const existingSite = connectedSites.find(site => site.url === url && site.userId === currentUser.id);
+    if (existingSite) {
+      alert('This website is already connected to your account.');
+      return;
+    }
     
     const newSite = {
       id: Date.now(),
       name,
       url,
-      api,
+      api: method === 'api' ? api : '',
       method,
-      status: 'connected',
-      data: {
-        bugs: Math.floor(Math.random() * 50),
-        features: Math.floor(Math.random() * 30),
-        uptime: Math.floor(Math.random() * 20) + 80,
-        lastSync: new Date().toISOString(),
-        confidence: Math.floor(Math.random() * 20) + 80
+      status: 'connecting',
+      userId: currentUser.id,
+      tracking: {
+        bugs: trackBugs,
+        features: trackFeatures,
+        status: trackStatus
       },
-      userId: currentUser.id
+      data: {
+        bugs: trackBugs ? Math.floor(Math.random() * 50) : 0,
+        features: trackFeatures ? Math.floor(Math.random() * 30) : 0,
+        uptime: trackStatus ? Math.floor(Math.random() * 20) + 80 : 100,
+        lastSync: new Date().toISOString(),
+        confidence: Math.floor(Math.random() * 20) + 80,
+        lastChecked: new Date().toISOString()
+      },
+      createdAt: new Date().toISOString()
     };
     
     connectedSites.push(newSite);
     saveData();
+    
+    // Clear form
+    document.getElementById('site-name').value = '';
+    document.getElementById('site-url').value = '';
+    document.getElementById('site-api').value = '';
+    document.getElementById('track-bugs').checked = true;
+    document.getElementById('track-features').checked = false;
+    document.getElementById('track-status').checked = false;
+    
+    // Simulate connection process
+    setTimeout(() => {
+      newSite.status = 'connected';
+      saveData();
+      loadDashboard();
+    }, 2000);
+    
     loadDashboard();
     hideModal('add-site-modal');
-    alert('Website added successfully!');
+    alert('Website connection initiated! It may take a few moments to establish the connection.');
   }
 
   function loadDashboard() {
@@ -879,13 +1368,13 @@
     const userSites = connectedSites.filter(site => site.userId === currentUser.id);
     
     document.getElementById('total-sites').textContent = userSites.length;
-    document.getElementById('total-bugs').textContent = userSites.reduce((sum, site) => sum + site.data.bugs, 0);
+    document.getElementById('total-bugs').textContent = userSites.reduce((sum, site) => sum + (site.tracking.bugs ? site.data.bugs : 0), 0);
     
     const sitesGrid = document.getElementById('sites-grid');
     sitesGrid.innerHTML = '';
     
     if (userSites.length === 0) {
-      sitesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px;">No websites connected yet. Add your first site!</div>';
+      sitesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px;">No websites connected yet. Add your first site to start tracking!</div>';
       return;
     }
     
@@ -897,29 +1386,50 @@
           <div>
             <h3 style="margin:0;font-size:16px">${site.name}</h3>
             <p style="margin:4px 0;color:var(--text3);font-size:12px">${site.url}</p>
+            <p style="margin:2px 0;color:var(--text4);font-size:11px">Method: ${site.method.toUpperCase()} • Added: ${new Date(site.createdAt).toLocaleDateString()}</p>
           </div>
           <span class="status status-${site.status}">${site.status}</span>
         </div>
-        <div class="grid grid-2" style="margin-top:16px">
-          <div class="metric">
-            <div class="metric-value">${site.data.bugs}</div>
-            <div class="metric-label">Bugs</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value">${site.data.uptime}%</div>
-            <div class="metric-label">Uptime</div>
-          </div>
+        
+        <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:6px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2)">
+          <strong>⚠️ Data Disclaimer:</strong> Information from external sources may not be fully accurate. Always verify independently.
+        </div>
+        
+        <div class="grid grid-2" style="margin-bottom:16px">
+          ${site.tracking.bugs ? `
+            <div class="metric">
+              <div class="metric-value">${site.data.bugs}</div>
+              <div class="metric-label">Bugs</div>
+            </div>
+          ` : ''}
+          ${site.tracking.features ? `
+            <div class="metric">
+              <div class="metric-value">${site.data.features}</div>
+              <div class="metric-label">Features</div>
+            </div>
+          ` : ''}
+          ${site.tracking.status ? `
+            <div class="metric">
+              <div class="metric-value">${site.data.uptime}%</div>
+              <div class="metric-label">Uptime</div>
+            </div>
+          ` : ''}
           <div class="metric">
             <div class="metric-value">${site.data.confidence}%</div>
             <div class="metric-label">Confidence</div>
           </div>
-          <div class="metric">
-            <div class="metric-value">${site.data.features}</div>
-            <div class="metric-label">Features</div>
-          </div>
         </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-          <button class="btn btn-secondary" onclick="syncSite(${site.id})">Sync</button>
+        
+        <div style="margin-bottom:12px;padding:8px;background:var(--bg4);border-radius:6px;font-size:12px;color:var(--text3)">
+          <div>Last sync: ${new Date(site.data.lastSync).toLocaleString()}</div>
+          <div>Status: ${site.status === 'connected' ? 'Active' : site.status === 'connecting' ? 'Connecting...' : 'Error'}</div>
+        </div>
+        
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="syncSite(${site.id})" ${site.status === 'syncing' ? 'disabled' : ''}>
+            ${site.status === 'syncing' ? 'Syncing...' : 'Sync Now'}
+          </button>
+          <button class="btn btn-primary" onclick="viewSiteReport(${site.id})">View Report</button>
           <button class="btn btn-danger" onclick="removeSite(${site.id})">Remove</button>
         </div>
       `;
@@ -948,8 +1458,96 @@
     }
   }
 
+  function viewSiteReport(siteId) {
+    if (!isPremium) {
+      alert('Premium subscription required to view detailed reports');
+      showPaymentModal();
+      return;
+    }
+    
+    const site = connectedSites.find(s => s.id === siteId);
+    if (!site) return;
+    
+    const reportModal = document.createElement('div');
+    reportModal.className = 'modal';
+    reportModal.id = 'report-modal';
+    reportModal.innerHTML = `
+      <div class="modal-content" style="max-width:800px">
+        <div class="modal-header">
+          <h2 class="modal-title">Report: ${site.name}</h2>
+          <span class="modal-close" onclick="hideModal('report-modal')">&times;</span>
+        </div>
+        
+        <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:8px;padding:16px;margin-bottom:24px">
+          <strong>⚠️ Data Accuracy Notice:</strong> This report contains information from external sources. 
+          Data accuracy is not guaranteed (${site.data.confidence}% confidence). Always verify information independently.
+        </div>
+        
+        <div class="grid grid-2" style="margin-bottom:24px">
+          <div class="card">
+            <h3 style="margin-bottom:16px;color:var(--text)">Connection Details</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+              <div><strong>URL:</strong> <a href="${site.url}" target="_blank" style="color:var(--cyan)">${site.url}</a></div>
+              <div><strong>Method:</strong> ${site.method.toUpperCase()}</div>
+              <div><strong>Status:</strong> <span class="status status-${site.status}">${site.status}</span></div>
+              <div><strong>Added:</strong> ${new Date(site.createdAt).toLocaleDateString()}</div>
+              <div><strong>Last Sync:</strong> ${new Date(site.data.lastSync).toLocaleString()}</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <h3 style="margin-bottom:16px;color:var(--text)">Tracking Configuration</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+              <div><strong>Bugs:</strong> ${site.tracking.bugs ? '✅ Enabled' : '❌ Disabled'}</div>
+              <div><strong>Features:</strong> ${site.tracking.features ? '✅ Enabled' : '❌ Disabled'}</div>
+              <div><strong>Status:</strong> ${site.tracking.status ? '✅ Enabled' : '❌ Disabled'}</div>
+              <div><strong>Data Confidence:</strong> ${site.data.confidence}%</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3 style="margin-bottom:16px;color:var(--text)">Current Metrics</h3>
+          <div class="grid grid-4">
+            ${site.tracking.bugs ? `
+              <div class="metric">
+                <div class="metric-value">${site.data.bugs}</div>
+                <div class="metric-label">Active Bugs</div>
+              </div>
+            ` : ''}
+            ${site.tracking.features ? `
+              <div class="metric">
+                <div class="metric-value">${site.data.features}</div>
+                <div class="metric-label">Features</div>
+              </div>
+            ` : ''}
+            ${site.tracking.status ? `
+              <div class="metric">
+                <div class="metric-value">${site.data.uptime}%</div>
+                <div class="metric-label">Uptime</div>
+              </div>
+            ` : ''}
+            <div class="metric">
+              <div class="metric-value">${site.data.confidence}%</div>
+              <div class="metric-label">Data Quality</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top:24px;text-align:center">
+          <button class="btn btn-secondary" onclick="syncSite(${site.id})" ${site.status === 'syncing' ? 'disabled' : ''}>
+            ${site.status === 'syncing' ? 'Syncing...' : 'Refresh Data'}
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(reportModal);
+    document.getElementById('report-modal').classList.add('show');
+  }
+
   function removeSite(siteId) {
-    if (confirm('Are you sure you want to remove this website?')) {
+    if (confirm('Are you sure you want to remove this website? This action cannot be undone.')) {
       connectedSites = connectedSites.filter(s => s.id !== siteId);
       saveData();
       loadDashboard();
@@ -1037,6 +1635,106 @@
     alert(`System status updated to: ${status}`);
   }
 
+  // Legal Pages
+  function showLegalModal(type) {
+    const title = document.getElementById('legal-title');
+    const content = document.getElementById('legal-content');
+    
+    switch(type) {
+      case 'terms':
+        title.textContent = 'Terms of Service';
+        content.innerHTML = `
+          <h3>Acceptance of Terms</h3>
+          <p>By accessing and using Tracker Hub, you accept and agree to be bound by the terms and provision of this agreement.</p>
+          
+          <h3>User Responsibilities</h3>
+          <ul>
+            <li>Users are responsible for all data sources they connect to Tracker Hub</li>
+            <li>You must ensure you have proper authorization to access any connected services</li>
+            <li>No illegal, unauthorized, or prohibited use of the platform</li>
+            <li>You must comply with all applicable laws and regulations</li>
+          </ul>
+          
+          <h3>Platform Limitations</h3>
+          <ul>
+            <li>Tracker Hub is not liable for the accuracy or availability of third-party data</li>
+            <li>We do not guarantee uninterrupted or error-free service</li>
+            <li>Platform features may change without prior notice</li>
+          </ul>
+          
+          <h3>Account Termination</h3>
+          <p>Accounts may be suspended or terminated for violations of these terms. Users will be notified of any account changes.</p>
+          
+          <h3>Contact</h3>
+          <p>For questions about these terms, please contact us through our GitHub repository.</p>
+        `;
+        break;
+        
+      case 'privacy':
+        title.textContent = 'Privacy Policy';
+        content.innerHTML = `
+          <h3>Information We Collect</h3>
+          <ul>
+            <li><strong>Account Information:</strong> Email address, authentication data from Google/Discord OAuth</li>
+            <li><strong>Usage Data:</strong> Connected websites, interaction patterns, feature usage</li>
+            <li><strong>Technical Data:</strong> IP address, browser information, device details</li>
+          </ul>
+          
+          <h3>How We Use Your Information</h3>
+          <ul>
+            <li>To provide and maintain your Tracker Hub account</li>
+            <li>To authenticate your access to the platform</li>
+            <li>To improve our services and develop new features</li>
+            <li>To communicate important updates and changes</li>
+          </ul>
+          
+          <h3>Data Sharing</h3>
+          <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.</p>
+          
+          <h3>Data Security</h3>
+          <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+          
+          <h3>Your Rights</h3>
+          <p>You have the right to access, update, or delete your personal information. Contact us to exercise these rights.</p>
+        `;
+        break;
+        
+      case 'disclaimer':
+        title.textContent = 'Disclaimer';
+        content.innerHTML = `
+          <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:8px;padding:16px;margin-bottom:20px">
+            <strong>⚠️ Important Notice:</strong> Please read this disclaimer carefully before using Tracker Hub.
+          </div>
+          
+          <h3>Data Accuracy</h3>
+          <p><strong>NO GUARANTEE OF ACCURACY:</strong> Tracker Hub aggregates data from various third-party sources. We make no representations or warranties about the accuracy, completeness, or reliability of any data displayed on our platform.</p>
+          
+          <h3>User Responsibility</h3>
+          <ul>
+            <li>You must independently verify all data obtained through Tracker Hub</li>
+            <li>Do not make decisions based solely on data from our platform</li>
+            <li>Always cross-reference information with official sources</li>
+          </ul>
+          
+          <h3>Limitation of Liability</h3>
+          <p>Tracker Hub and its creators shall not be liable for any direct, indirect, incidental, consequential, or punitive damages arising from your use of the platform or reliance on any data provided.</p>
+          
+          <h3>Third-Party Services</h3>
+          <p>Tracker Hub connects to external websites and APIs. We are not responsible for the availability, accuracy, or policies of these third-party services.</p>
+          
+          <h3>Service Availability</h3>
+          <p>While we strive for high availability, Tracker Hub is provided "as is" without warranties of any kind. Service interruptions may occur.</p>
+          
+          <div style="background:var(--bg4);border-radius:8px;padding:16px;margin-top:20px">
+            <strong>By using Tracker Hub, you acknowledge that you understand and accept these limitations.</strong>
+          </div>
+        `;
+        break;
+    }
+    
+    document.getElementById('legal-modal').classList.add('show');
+  }
+
   // UI Updates
   function updateUI() {
     const totalSites = connectedSites.length;
@@ -1118,6 +1816,12 @@
       }
     } catch (error) {
       console.error('Failed to fetch bugs:', error);
+      // Show disclaimer about data accuracy
+      const bugSubSection = document.querySelector('.sub-section .sub-title');
+      if (bugSubSection && bugSubSection.textContent.includes('Active Bugs')) {
+        const parent = bugSubSection.closest('.sub-section');
+        parent.querySelector('.sub-title').textContent = 'Active Bugs (Unable to load - verify data independently)';
+      }
     }
   }
 
@@ -1130,7 +1834,7 @@
       
       try {
         const response = await fetch('https://api.fish.audio/v1/models', { mode: 'no-cors' });
-        console.log("Fish Audio API is reachable.");
+        console.log("External API is reachable.");
       } catch (error) {
         if (label) {
           label.textContent = "OFFLINE";
@@ -1152,6 +1856,215 @@
       glow.style.top = e.clientY - 10 + 'px';
     }
   });
+
+  // DASHBOARD FUNCTIONS
+  function updateOverview() {
+    if (!isPremium || !currentUser) return;
+
+    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
+    const activeSites = userSites.filter(site => site.status === 'connected');
+    const totalDataPoints = userSites.reduce((sum, site) => sum + (site.data.bugs || 0) + (site.data.features || 0), 0);
+    const lastSync = userSites.length > 0 ? Math.max(...userSites.map(site => new Date(site.data.lastSync).getTime())) : null;
+
+    document.getElementById('overview-sites').textContent = userSites.length;
+    document.getElementById('overview-active').textContent = activeSites.length;
+    document.getElementById('overview-sync').textContent = lastSync ? new Date(lastSync).toLocaleTimeString() : 'Never';
+    document.getElementById('overview-data').textContent = totalDataPoints;
+
+    document.getElementById('welcome-name').textContent = currentUser.name || 'User';
+    document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+  }
+
+  function renderChart() {
+    const ctx = document.getElementById('dataChart');
+    if (!ctx) return;
+
+    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
+    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const data = labels.map(() => Math.floor(Math.random() * 100) + 20);
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Data Points',
+          data: data,
+          borderColor: 'rgba(34, 211, 238, 1)',
+          backgroundColor: 'rgba(34, 211, 238, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: 'rgba(230, 237, 243, 0.6)'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            ticks: {
+              color: 'rgba(230, 237, 243, 0.6)'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function addActivity(text, type = 'info') {
+    const activityFeed = document.getElementById('activity-feed');
+    if (!activityFeed) return;
+
+    const activityItem = document.createElement('div');
+    activityItem.className = 'activity-item';
+
+    const icons = {
+      'info': 'ℹ️',
+      'success': '✅',
+      'warning': '⚠️',
+      'error': '❌',
+      'sync': '🔄'
+    };
+
+    activityItem.innerHTML = `
+      <div class="activity-icon">${icons[type] || 'ℹ️'}</div>
+      <div class="activity-content">
+        <div class="activity-text">${text}</div>
+        <div class="activity-time">${new Date().toLocaleTimeString()}</div>
+      </div>
+    `;
+
+    activityFeed.insertBefore(activityItem, activityFeed.firstChild);
+
+    // Keep only last 20 activities
+    while (activityFeed.children.length > 20) {
+      activityFeed.removeChild(activityFeed.lastChild);
+    }
+  }
+
+  function renderSitesPreview() {
+    const sitesPreview = document.getElementById('sites-preview');
+    const sitesEmpty = document.getElementById('sites-empty');
+    const sitesCount = document.getElementById('sites-count');
+
+    if (!sitesPreview || !sitesEmpty || !sitesCount) return;
+
+    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
+
+    sitesCount.textContent = `${userSites.length} sites connected`;
+
+    if (userSites.length === 0) {
+      sitesPreview.style.display = 'none';
+      sitesEmpty.style.display = 'block';
+      return;
+    }
+
+    sitesPreview.style.display = 'flex';
+    sitesEmpty.style.display = 'none';
+    sitesPreview.innerHTML = '';
+
+    // Show only first 3 sites
+    const previewSites = userSites.slice(0, 3);
+
+    previewSites.forEach(site => {
+      const siteCard = document.createElement('div');
+      siteCard.className = 'site-preview-card';
+
+      const statusText = site.status === 'connected' ? 'Active' : site.status === 'syncing' ? 'Syncing' : 'Error';
+      const statusColor = site.status === 'connected' ? 'var(--green)' : site.status === 'syncing' ? 'var(--yellow)' : 'var(--red)';
+
+      siteCard.innerHTML = `
+        <div class="site-preview-icon">${site.name.charAt(0).toUpperCase()}</div>
+        <div class="site-preview-content">
+          <div class="site-preview-name">${site.name}</div>
+          <div class="site-preview-url">${site.url}</div>
+        </div>
+        <div class="site-preview-status">
+          <div class="site-preview-status-text" style="color: ${statusColor}">${statusText}</div>
+          <div class="site-preview-time">${new Date(site.data.lastSync).toLocaleDateString()}</div>
+        </div>
+      `;
+
+      siteCard.onclick = () => viewSiteReport(site.id);
+      sitesPreview.appendChild(siteCard);
+    });
+  }
+
+  function syncAllSites() {
+    if (!isPremium) {
+      alert('Premium subscription required');
+      showPaymentModal();
+      return;
+    }
+
+    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
+    if (userSites.length === 0) {
+      alert('No sites to sync');
+      return;
+    }
+
+    addActivity('Starting sync for all sites...', 'sync');
+
+    userSites.forEach(site => {
+      site.status = 'syncing';
+    });
+
+    updateOverview();
+    renderSitesPreview();
+
+    setTimeout(() => {
+      userSites.forEach(site => {
+        site.status = 'connected';
+        site.data.bugs = Math.floor(Math.random() * 50);
+        site.data.features = Math.floor(Math.random() * 30);
+        site.data.uptime = Math.floor(Math.random() * 20) + 80;
+        site.data.lastSync = new Date().toISOString();
+        site.data.confidence = Math.floor(Math.random() * 20) + 80;
+      });
+
+      saveData();
+      updateOverview();
+      renderSitesPreview();
+      renderChart();
+      addActivity(`Successfully synced ${userSites.length} sites`, 'success');
+    }, 3000);
+  }
+
+  // Enhanced loadDashboard function
+  const originalLoadDashboard = loadDashboard;
+  loadDashboard = function() {
+    originalLoadDashboard();
+
+    if (isPremium && currentUser) {
+      updateOverview();
+      renderChart();
+      renderSitesPreview();
+
+      // Add initial activity if feed is empty
+      const activityFeed = document.getElementById('activity-feed');
+      if (activityFeed && activityFeed.children.length === 1) {
+        addActivity('Dashboard loaded successfully', 'success');
+        addActivity('Welcome to Tracker Hub Premium!', 'info');
+      }
+    }
+  };
 </script>
 </body>
 </html>
