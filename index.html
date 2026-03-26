@@ -160,66 +160,77 @@
     transition: transform 0.1s ease-out;
   }
 
-  /* CONNECT SECTION */
-  .connect-section {
-    border-top: 1px solid var(--border);
-    padding-top: 40px;
-    margin-bottom: 40px;
-    text-align: center;
-  }
+  /* CONNECTED WEBSITES */
+  .websites-dashboard{border-radius:12px;border:1px solid var(--border);background:var(--bg3);padding:24px;margin-bottom:40px}
+  .premium-gate{text-align:center;padding:40px 20px}
+  .gate-content{max-width:400px;margin:0 auto}
+  .gate-icon{font-size:48px;margin-bottom:16px}
+  .gate-content h3{font-size:20px;font-weight:600;margin-bottom:8px;color:var(--text)}
+  .gate-content p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6}
+  .premium-btn{background:linear-gradient(135deg,var(--purple),var(--pink));color:white;border:none;padding:14px 28px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s}
+  .premium-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(167,139,250,.4)}
 
-  .connect-section h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
+  .websites-content{display:none}
+  .add-website{margin-bottom:32px}
+  .add-website h3{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--text)}
+  .add-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;margin-bottom:24px}
+  .site-input{padding:10px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg4);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px}
+  .site-input:focus{outline:none;border-color:var(--cyan)}
+  .add-btn{background:var(--green);color:white;border:none;padding:10px 20px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+  .add-btn:hover{background:rgba(74,222,128,.8);transform:translateY(-1px)}
 
-  .connect-section p {
-    font-size: 14px;
-    color: var(--text2);
-    max-width: 500px;
-    margin: 0 auto 20px;
-    line-height: 1.6;
-  }
-
-  .connect-btn {
-    background: linear-gradient(135deg, var(--cyan), var(--purple));
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-  }
-
-  .connect-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(34,211,238,0.4);
-  }
-
-  #discord-data {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text3);
-    background: var(--bg3);
-    padding: 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: left;
-  }
+  .connected-sites h3{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--text)}
+  .sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .site-card{border-radius:8px;border:1px solid var(--border);background:var(--bg4);padding:16px;position:relative}
+  .site-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .site-title{font-size:14px;font-weight:600;color:var(--text)}
+  .site-status{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid}
+  .status-connected{color:var(--green);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.08)}
+  .status-syncing{color:var(--yellow);border-color:rgba(250,204,21,.3);background:rgba(250,204,21,.08)}
+  .status-error{color:var(--red);border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.08)}
+  .site-url{font-size:11px;color:var(--text3);margin-bottom:8px;word-break:break-all}
+  .site-data{display:flex;gap:12px}
+  .data-item{text-align:center}
+  .data-value{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--cyan)}
+  .data-label{font-size:9px;color:var(--text3);text-transform:uppercase}
+  .site-actions{position:absolute;top:12px;right:12px;display:flex;gap:4px}
+  .action-btn{width:24px;height:24px;border-radius:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+  .action-btn:hover{background:var(--border);color:var(--text)}
+  .action-btn.remove:hover{color:var(--red)}
 
   /* GLOW BG */
   .glow-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-  .glow-1{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:500px;border-radius:50%;background:rgba(34,211,238,.04);filter:blur(80px)}
-  .glow-2{position:absolute;top:40%;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(167,139,250,.04);filter:blur(80px)}
+  .glow-1{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:500px;border-radius:50%;background:rgba(34,211,238,.04);filter:blur(80px);animation:float 20s ease-in-out infinite}
+  .glow-2{position:absolute;top:40%;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(167,139,250,.04);filter:blur(80px);animation:float-reverse 25s ease-in-out infinite}
+  .glow-3{position:absolute;bottom:-150px;left:20%;width:300px;height:300px;border-radius:50%;background:rgba(244,114,182,.03);filter:blur(60px);animation:float 30s ease-in-out infinite}
   .content{position:relative;z-index:1}
+
+  /* Floating Particles */
+  .particle{position:absolute;border-radius:50%;pointer-events:none;animation:drift 15s linear infinite}
+  .particle:nth-child(1){width:4px;height:4px;background:rgba(34,211,238,.3);top:20%;left:10%;animation-duration:20s}
+  .particle:nth-child(2){width:6px;height:6px;background:rgba(167,139,250,.2);top:60%;left:80%;animation-duration:25s}
+  .particle:nth-child(3){width:3px;height:3px;background:rgba(74,222,128,.4);top:40%;left:60%;animation-duration:18s}
+  .particle:nth-child(4){width:5px;height:5px;background:rgba(251,146,60,.3);top:80%;left:30%;animation-duration:22s}
+  .particle:nth-child(5){width:4px;height:4px;background:rgba(244,114,182,.3);top:10%;left:70%;animation-duration:28s}
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+    33% { transform: translateX(-50%) translateY(-20px) rotate(120deg); }
+    66% { transform: translateX(-50%) translateY(10px) rotate(240deg); }
+  }
+
+  @keyframes float-reverse {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-15px) rotate(-120deg); }
+    66% { transform: translateY(5px) rotate(-240deg); }
+  }
+
+  @keyframes drift {
+    0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+  }
 
   /* FILTER hidden state */
   .tracker-section[data-cat]{transition:opacity .2s}
@@ -261,7 +272,7 @@
 </style>
 </head>
 <body>
-<div class="glow-bg"><div class="glow-1"></div><div class="glow-2"></div></div>
+<div class="glow-bg"><div class="glow-1"></div><div class="glow-2"></div><div class="glow-3"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
 <div class="cursor-glow" id="cursor-glow"></div>
 <div class="content">
 <div class="page">
@@ -290,6 +301,7 @@
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">1</div><div class="stat-label">Live tracker</div></div>
       <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Coming soon</div></div>
+      <div class="stat"><div class="stat-num" id="connected-count">0</div><div class="stat-label">Connected sites</div></div>
       <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Expandable</div></div>
     </div>
   </div>
@@ -420,12 +432,44 @@
     </div>
   </div>
 
-  <!-- CONNECT SECTION -->
-  <div class="connect-section">
-    <h2>Connect & Contribute</h2>
-    <p>Join the Fish Audio Discord to report bugs, suggest features, and get real-time updates. Connect your account to pull live data from the community.</p>
-    <button class="connect-btn" onclick="connectDiscord()">Connect to Discord</button>
-    <div id="discord-data">🔄 Connecting to Fish Audio Discord...</div>
+  <!-- CONNECTED WEBSITES DASHBOARD -->
+  <div class="tracker-section" data-cat="all" id="websites-section">
+    <div class="section-header">
+      <div class="section-bar" style="background:var(--purple)"></div>
+      <h2>Connected Websites</h2>
+      <div class="section-divider"></div>
+      <span class="section-meta">Premium feature</span>
+    </div>
+
+    <div class="websites-dashboard">
+      <div class="premium-gate" id="premium-gate">
+        <div class="gate-content">
+          <div class="gate-icon">🔒</div>
+          <h3>Premium Feature</h3>
+          <p>Connect and sync data from your own websites with advanced customization options.</p>
+          <button class="premium-btn" onclick="upgradeToPremium()">Upgrade to Premium</button>
+        </div>
+      </div>
+
+      <div class="websites-content" id="websites-content" style="display:none;">
+        <div class="add-website">
+          <h3>Add New Website</h3>
+          <div class="add-form">
+            <input type="text" id="site-name" placeholder="Website Name" class="site-input">
+            <input type="url" id="site-url" placeholder="Website URL" class="site-input">
+            <input type="text" id="site-api" placeholder="API Endpoint (optional)" class="site-input">
+            <button class="add-btn" onclick="addWebsite()">Add Website</button>
+          </div>
+        </div>
+
+        <div class="connected-sites" id="connected-sites">
+          <h3>Your Connected Sites</h3>
+          <div class="sites-grid" id="sites-grid">
+            <!-- Connected sites will appear here -->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FOOTER -->
@@ -611,6 +655,136 @@
       }
     }
   }
+
+  // Premium and Website Management
+  let isPremium = localStorage.getItem('trackerHubPremium') === 'true';
+
+  function upgradeToPremium() {
+    isPremium = true;
+    localStorage.setItem('trackerHubPremium', 'true');
+    document.getElementById('premium-gate').style.display = 'none';
+    document.getElementById('websites-content').style.display = 'block';
+    loadConnectedSites();
+    alert('Premium features unlocked! You can now connect and manage your websites.');
+  }
+
+  function addWebsite() {
+    if (!isPremium) return;
+    
+    const name = document.getElementById('site-name').value.trim();
+    const url = document.getElementById('site-url').value.trim();
+    const api = document.getElementById('site-api').value.trim();
+    
+    if (!name || !url) {
+      alert('Please enter both website name and URL.');
+      return;
+    }
+    
+    const sites = JSON.parse(localStorage.getItem('connectedSites') || '[]');
+    const newSite = {
+      id: Date.now(),
+      name,
+      url,
+      api,
+      status: 'connected',
+      data: { bugs: Math.floor(Math.random() * 20), features: Math.floor(Math.random() * 15), uptime: Math.floor(Math.random() * 20) + 80 }
+    };
+    
+    sites.push(newSite);
+    localStorage.setItem('connectedSites', JSON.stringify(sites));
+    
+    // Clear form
+    document.getElementById('site-name').value = '';
+    document.getElementById('site-url').value = '';
+    document.getElementById('site-api').value = '';
+    
+    loadConnectedSites();
+  }
+
+  function loadConnectedSites() {
+    if (!isPremium) return;
+    
+    const sites = JSON.parse(localStorage.getItem('connectedSites') || '[]');
+    const sitesGrid = document.getElementById('sites-grid');
+    sitesGrid.innerHTML = '';
+    
+    // Update hero stat
+    document.getElementById('connected-count').textContent = sites.length;
+    
+    if (sites.length === 0) {
+      sitesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px;">No websites connected yet. Add your first site above!</div>';
+      return;
+    }
+    
+    sites.forEach(site => {
+      const siteCard = document.createElement('div');
+      siteCard.className = 'site-card';
+      siteCard.innerHTML = `
+        <div class="site-header">
+          <div class="site-title">${site.name}</div>
+          <span class="site-status status-${site.status}">Connected</span>
+        </div>
+        <div class="site-url">${site.url}</div>
+        <div class="site-data">
+          <div class="data-item">
+            <div class="data-value">${site.data.bugs}</div>
+            <div class="data-label">Bugs</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value">${site.data.features}</div>
+            <div class="data-label">Features</div>
+          </div>
+          <div class="data-item">
+            <div class="data-value">${site.data.uptime}%</div>
+            <div class="data-label">Uptime</div>
+          </div>
+        </div>
+        <div class="site-actions">
+          <button class="action-btn" onclick="syncSite(${site.id})" title="Sync Data">🔄</button>
+          <button class="action-btn remove" onclick="removeSite(${site.id})" title="Remove Site">🗑️</button>
+        </div>
+      `;
+      sitesGrid.appendChild(siteCard);
+    });
+  }
+
+  function syncSite(siteId) {
+    const sites = JSON.parse(localStorage.getItem('connectedSites') || '[]');
+    const site = sites.find(s => s.id === siteId);
+    if (site) {
+      site.status = 'syncing';
+      site.data.bugs = Math.floor(Math.random() * 20);
+      site.data.features = Math.floor(Math.random() * 15);
+      site.data.uptime = Math.floor(Math.random() * 20) + 80;
+      localStorage.setItem('connectedSites', JSON.stringify(sites));
+      
+      setTimeout(() => {
+        site.status = 'connected';
+        localStorage.setItem('connectedSites', JSON.stringify(sites));
+        loadConnectedSites();
+      }, 2000);
+      
+      loadConnectedSites();
+    }
+  }
+
+  function removeSite(siteId) {
+    if (confirm('Are you sure you want to remove this website?')) {
+      const sites = JSON.parse(localStorage.getItem('connectedSites') || '[]');
+      const filteredSites = sites.filter(s => s.id !== siteId);
+      localStorage.setItem('connectedSites', JSON.stringify(filteredSites));
+      loadConnectedSites();
+    }
+  }
+
+  // Initialize premium status on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    if (isPremium) {
+      document.getElementById('premium-gate').style.display = 'none';
+      document.getElementById('websites-content').style.display = 'block';
+      loadConnectedSites();
+    }
+  });
 </script>
 </body>
 </html>
