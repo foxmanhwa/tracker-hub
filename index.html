@@ -386,17 +386,33 @@
 
 <script>
   function filter(cat) {
+    // 1. Update Button States
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    document.querySelectorAll('.tracker-section, .coming-card').forEach(el => {
-      const elCat = el.dataset.cat;
+    // Find the button that was clicked more reliably
+    const clickedBtn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.toLowerCase().includes(cat));
+    if (clickedBtn) clickedBtn.classList.add('active');
+    if (cat === 'all') document.querySelectorAll('.filter-btn')[0].classList.add('active');
+
+    // 2. Filter Sections and Cards
+    document.querySelectorAll('[data-cat]').forEach(el => {
+      const elCat = el.getAttribute('data-cat');
+      
+      // Logic: Show if 'all', or if category matches, or if it's the "all" section container
       if (cat === 'all' || elCat === cat || elCat === 'all') {
         el.style.display = '';
+        // Small fade-in effect
+        el.style.opacity = '0';
+        setTimeout(() => el.style.opacity = '1', 10);
       } else {
         el.style.display = 'none';
       }
     });
   }
+
+  // Add a simple animation for progress bars on load
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("Tracker Hub Live.");
+  });
 </script>
 </body>
 </html>
