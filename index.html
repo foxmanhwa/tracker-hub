@@ -453,6 +453,12 @@
   .ai-badge{display:inline-block;font-size:9px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);text-transform:uppercase;margin-right:6px}
   .ai-link{font-size:12px;color:var(--cyan);text-decoration:none}
   .ai-trending{font-size:12px;font-weight:700;color:var(--yellow);margin-top:6px;display:flex;align-items:center;gap:4px}
+  .notif-dropdown::before{content:'';position:absolute;top:-8px;right:10px;width:16px;height:16px;background:var(--bg3);transform:rotate(45deg);border-left:1px solid var(--border);border-top:1px solid var(--border);}
+  .notif-item{padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .notif-item:hover{background:var(--bg4)}
+  .notif-item.unread{background:rgba(34,211,238,.08)}
+  .notif-item p{margin:0;font-size:13px;color:var(--text);}
+  .notif-item small{font-size:10px;color:var(--text3);}
 </style>
 </head>
 <body>
@@ -475,7 +481,11 @@
         <div class="brand-sub">Universal tracking platform</div>
       </div>
     </div>
-    <div style="display:flex;gap:12px">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="notif-wrapper" style="position:relative">
+        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotifications()">🔔 <span id="notif-count" style="font-size:12px;margin-left:4px;color:var(--yellow)">0</span></button>
+        <div id="notif-dropdown" class="notif-dropdown" style="position:absolute;right:0;top:38px;display:none;min-width:280px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.4);z-index:200;max-height:320px;overflow-y:auto;"></div>
+      </div>
       <button class="btn btn-secondary" id="login-btn" onclick="showLoginModal()">Login</button>
       <div id="user-info" style="display:none">
         <span id="user-name"></span>
@@ -748,6 +758,20 @@
       <div class="dashboard-grid">
         <!-- LEFT COLUMN -->
         <div class="dashboard-left">
+          <!-- POPULAR AI TOOLS -->
+          <div class="card animate-slideUp">
+            <div class="card-header">
+              <h2 class="card-title">Trending AI Tools</h2>
+              <p class="card-subtitle">Powered by backend popularity score</p>
+            </div>
+            <div id="popular-list" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div id="popular-empty" class="empty-state" style="display:none;">
+              <div class="empty-icon">📈</div>
+              <h3>No trending tools yet</h3>
+              <p>Refresh soon for the latest trending AI tools.</p>
+            </div>
+          </div>
+
           <!-- QUICK ACTIONS -->
           <div class="card animate-slideUp">
             <div class="card-header">
@@ -1090,6 +1114,9 @@
 
   // AI Discovery State
   let aiTools = [];
+  let watchlist = new Set();
+  let notifications = [];
+  let viewedTools = new Set();
   const aiCategories = ['Text AI', 'Image Generation', 'Video AI', 'Voice AI', 'Developer Tools'];
 
 
@@ -1098,14 +1125,20 @@
     loadData();
     loadAITools();
     checkAuth();
+    loadWatchlist();
     fetchBugs();
     checkFishStatus();
+    fetchPopularAiTools();
+    fetchNotifications();
     renderAITools();
     updateOverview();
     updateUI();
 
-    // Continuously update AI tool list every 20 seconds (simulated)
-    setInterval(aggregateAIUpdates, 20000);
+    // Refresh AI list and popularity every 3 minutes
+    setInterval(() => {
+      fetchAIFromServer();
+      fetchPopularAiTools();
+    }, 180000);
   });
 
   // Data Management
@@ -1181,38 +1214,6 @@
     fetchAIFromServer();
   }
 
-  function aggregateAIUpdates() {
-    // Simulate periodic aggregation from sources; in real platform, use APIs/web scraping
-    const newToolTemplates = [
-      {name:'MirrorGPT',desc:'Mirror prompts across tools and optimize performance',category:'Text AI',source:'https://example.com/mirrorgpt'},
-      {name:'ArtFlows',desc:'AI-driven animated image pipeline',category:'Image Generation',source:'https://example.com/artflows'},
-      {name:'StreamAI',desc:'Live video summarization and clip generation',category:'Video AI',source:'https://example.com/streamai'},
-      {name:'VoxEdge',desc:'On-device voice model for zero-latency conversation',category:'Voice AI',source:'https://example.com/voxedge'},
-      {name:'DevOpsGPT',desc:'Actionable deployment and infra AI assistant',category:'Developer Tools',source:'https://example.com/devopsgpt'}
-    ];
-
-    const missing = newToolTemplates.filter(t => !aiTools.some(a => a.name === t.name));
-    missing.forEach(t => {
-      const tool = {
-        id: aiTools.length ? Math.max(...aiTools.map(i=>i.id)) + 1 : 1,
-        name: t.name,
-        desc: t.desc,
-        category: t.category,
-        release: new Date().toISOString().slice(0,10),
-        source: t.source,
-        popularity: Math.floor(Math.random()*30)+60,
-        trending: Math.floor(Math.random()*30)+60,
-        createdAt: new Date().toISOString()
-      };
-      aiTools.push(tool);
-      addActivity(`New AI release found: ${tool.name}`, 'info');
-    });
-
-    aiTools.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
-    saveData();
-    renderAITools();
-    updateOverview();
-  }
 
   function updateOverview() {
     if (!isPremium || !currentUser) return;
@@ -1259,15 +1260,186 @@
     displayed.forEach(tool => {
       const card = document.createElement('div');
       card.className = 'ai-card';
+      const saved = watchlist.has(tool.id || tool._id);
       card.innerHTML = `
         <div class="ai-title">${tool.name}</div>
         <div class="ai-meta">${tool.desc}</div>
         <div class="ai-meta">Category: <strong>${tool.category}</strong> · Released: <strong>${tool.release}</strong></div>
-        <div class="ai-meta">Source: <a href="${tool.source}" target="_blank" class="ai-link">${tool.source}</a></div>
+        <div class="ai-meta">Source: <a href="${tool.source}" target="_blank" class="ai-link" onclick="trackToolClick('${tool._id || tool.id}')">${tool.source}</a></div>
         <div class="ai-trending">🔥 Popularity ${tool.popularity}% · Trending ${tool.trending}%</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ${saved ? 'btn-secondary' : 'btn-primary'}" onclick="${saved ? `removeFromWatchlist('${tool._id || tool.id}')` : `addToWatchlist('${tool._id || tool.id}')`}">${saved ? 'Saved' : 'Save'}</button>
+          <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}', '${tool.source.replace(/'/g, "\'")}')">Open</button>
+        </div>
       `;
+      if (!viewedTools.has(tool._id || tool.id)) {
+        viewedTools.add(tool._id || tool.id);
+        trackToolView(tool._id || tool.id);
+      }
       container.appendChild(card);
     });
+  }
+
+  function openAiTool(toolId, url) {
+    if(url){
+      window.open(url, '_blank');
+      trackToolClick(toolId);
+    }
+  }
+
+  async function trackToolClick(toolId) {
+    if (!toolId) return;
+    await fetch(`http://localhost:5000/api/ai-tools/${toolId}/click`, { method: 'POST' });
+  }
+
+  async function trackToolView(toolId) {
+    if (!toolId) return;
+    await fetch(`http://localhost:5000/api/ai-tools/${toolId}/view`, { method: 'POST' });
+  }
+
+  async function fetchPopularAiTools() {
+    try {
+      const response = await fetch('http://localhost:5000/api/ai-tools/popular');
+      if (!response.ok) throw new Error('Server returned ' + response.status);
+      const data = await response.json();
+      const list = document.getElementById('popular-list');
+      const empty = document.getElementById('popular-empty');
+
+      if (!list) return;
+      list.innerHTML = '';
+
+      if (!Array.isArray(data) || data.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      data.slice(0, 8).forEach(tool => {
+        const item = document.createElement('div');
+        item.className = 'ai-card';
+        item.innerHTML = `
+          <div class="ai-title">${tool.name}</div>
+          <div class="ai-meta">${tool.description}</div>
+          <div class="ai-meta">Score: <strong>${tool.score?.toFixed(0) || 0}</strong> · Views: ${tool.views || 0} · Clicks: ${tool.clicks || 0} · Saves: ${tool.saves || 0}</div>
+          <button class="btn btn-secondary" style="margin-top:8px" onclick="addToWatchlist('${tool._id}')">Save</button>
+        `;
+        list.appendChild(item);
+      });
+    } catch (err) {
+      console.warn('Cannot fetch popular AI tools:', err.message);
+    }
+  }
+
+  async function addToWatchlist(toolId) {
+    if (!currentUser || !currentUser.id) { alert('Please login to save tools.'); return; }
+    try {
+      await fetch('http://localhost:5000/api/watchlist/add', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, toolId })
+      });
+      watchlist.add(toolId);
+      renderAITools();
+      fetchPopularAiTools();
+      fetchNotifications();
+      addActivity(`Saved tool to watchlist`, 'success');
+    } catch (err) {
+      console.error('Watchlist save failed:', err.message);
+    }
+  }
+
+  async function removeFromWatchlist(toolId) {
+    if (!currentUser || !currentUser.id) { alert('Please login to remove tools.'); return; }
+    try {
+      await fetch('http://localhost:5000/api/watchlist/remove', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, toolId })
+      });
+      watchlist.delete(toolId);
+      renderAITools();
+      fetchPopularAiTools();
+      fetchNotifications();
+      addActivity(`Removed tool from watchlist`, 'info');
+    } catch (err) {
+      console.error('Watchlist remove failed:', err.message);
+    }
+  }
+
+  async function loadWatchlist() {
+    if (!currentUser || !currentUser.id) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/watchlist?userId=${encodeURIComponent(currentUser.id)}`);
+      if (!response.ok) throw new Error('Server returned ' + response.status);
+      const data = await response.json();
+      watchlist = new Set((data || []).map(t => t._id));
+      renderAITools();
+    } catch (err) {
+      console.warn('Unable to load watchlist:', err.message);
+    }
+  }
+
+  async function fetchNotifications() {
+    if (!currentUser || !currentUser.id) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/notifications?userId=${encodeURIComponent(currentUser.id)}`);
+      if (!response.ok) throw new Error('Server returned ' + response.status);
+      notifications = await response.json();
+
+      const count = notifications.filter(n => !n.read).length;
+      document.getElementById('notif-count').textContent = count;
+
+      const dropdown = document.getElementById('notif-dropdown');
+      if (!dropdown) return;
+
+      dropdown.innerHTML = notifications.map(note => `
+        <div class="notif-item ${note.read ? '' : 'unread'}" onclick="markNotificationRead('${note._id}')">
+          <p>${note.message}</p>
+          <small>${new Date(note.createdAt).toLocaleString()}</small>
+        </div>
+      `).join('') || '<div class="notif-item"><p>No notifications yet</p></div>';
+    } catch (err) {
+      console.warn('Unable to load notifications:', err.message);
+    }
+  }
+
+  async function markNotificationRead(notificationId) {
+    if (!currentUser || !currentUser.id) return;
+
+    try {
+      await fetch('http://localhost:5000/api/notifications/read', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, notificationId })
+      });
+      await fetchNotifications();
+    } catch (err) {
+      console.error('Unable to mark notification read:', err.message);
+    }
+  }
+
+  function toggleNotifications() {
+    const dropdown = document.getElementById('notif-dropdown');
+    if (!dropdown) return;
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    if (dropdown.style.display === 'block') {
+      markAllNotificationsRead();
+    }
+  }
+
+  async function markAllNotificationsRead() {
+    if (!currentUser || !currentUser.id) return;
+    try {
+      await fetch('http://localhost:5000/api/notifications/read', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: currentUser.id, all: true })
+      });
+      await fetchNotifications();
+    } catch (err) {
+      console.error('Unable to mark all notifications read:', err.message);
+    }
   }
 
   // Authentication
@@ -1282,6 +1454,8 @@
       }
       
       isPremium = currentUser.premium;
+      loadWatchlist();
+      fetchNotifications();
     }
   }
 
