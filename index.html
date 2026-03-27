@@ -443,6 +443,16 @@
   .status-dot.red{background:var(--red);box-shadow:0 0 6px rgba(248,113,113,.5)}
   .status-label{flex:1;color:var(--text2);font-size:14px}
   .status-value{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3);text-transform:uppercase}
+
+  /* AI DISCOVERY */
+  .ai-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .ai-card{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all .2s;cursor:pointer}
+  .ai-card:hover{border-color:var(--cyan);box-shadow:0 12px 25px rgba(0,0,0,.2)}
+  .ai-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .ai-meta{font-size:12px;color:var(--text3);margin-bottom:8px}
+  .ai-badge{display:inline-block;font-size:9px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);text-transform:uppercase;margin-right:6px}
+  .ai-link{font-size:12px;color:var(--cyan);text-decoration:none}
+  .ai-trending{font-size:12px;font-weight:700;color:var(--yellow);margin-top:6px;display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -694,6 +704,43 @@
               <div class="overview-label">Data Points</div>
             </div>
           </div>
+          <div class="overview-card">
+            <div class="overview-icon">🤖</div>
+            <div class="overview-content">
+              <div class="overview-value" id="overview-ai">0</div>
+              <div class="overview-label">AI Tools Tracked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI DISCOVERY PANEL -->
+      <div class="card animate-slideUp">
+        <div class="card-header">
+          <h2 class="card-title">AI Discovery Hub</h2>
+          <p class="card-subtitle">Newly released tools and trending models</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+          <input id="ai-search" class="form-input" type="search" placeholder="Search AI tools..." oninput="renderAITools()" />
+          <select id="ai-category" class="form-input" onchange="renderAITools()">
+            <option value="all">All Categories</option>
+            <option value="Text AI">Text AI</option>
+            <option value="Image Generation">Image Generation</option>
+            <option value="Video AI">Video AI</option>
+            <option value="Voice AI">Voice AI</option>
+            <option value="Developer Tools">Developer Tools</option>
+          </select>
+          <select id="ai-sort" class="form-input" onchange="renderAITools()">
+            <option value="newest">Newest</option>
+            <option value="popular">Popular</option>
+            <option value="trending">Trending</option>
+          </select>
+        </div>
+        <div id="ai-list" class="ai-list"></div>
+        <div id="ai-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">🧠</div>
+          <h3>No AI tools found</h3>
+          <p>Try changing the search or filters to discover cool new AI releases.</p>
         </div>
       </div>
 
@@ -1041,13 +1088,24 @@
   let users = [];
   let payments = [];
 
+  // AI Discovery State
+  let aiTools = [];
+  const aiCategories = ['Text AI', 'Image Generation', 'Video AI', 'Voice AI', 'Developer Tools'];
+
+
   // Initialize App
   document.addEventListener('DOMContentLoaded', () => {
     loadData();
+    loadAITools();
     checkAuth();
     fetchBugs();
     checkFishStatus();
+    renderAITools();
+    updateOverview();
     updateUI();
+
+    // Continuously update AI tool list every 20 seconds (simulated)
+    setInterval(aggregateAIUpdates, 20000);
   });
 
   // Data Management
@@ -1065,6 +1123,151 @@
     localStorage.setItem('connectedSites', JSON.stringify(connectedSites));
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('payments', JSON.stringify(payments));
+    localStorage.setItem('aiTools', JSON.stringify(aiTools));
+  }
+
+  function categorizeAITool(name) {
+    const lower = (name || '').toLowerCase();
+    if (lower.includes('image') || lower.includes('vision')) return 'Image Generation';
+    if (lower.includes('video') || lower.includes('clip')) return 'Video AI';
+    if (lower.includes('voice') || lower.includes('speech') || lower.includes('tts')) return 'Voice AI';
+    if (lower.includes('code') || lower.includes('dev') || lower.includes('assistant')) return 'Developer Tools';
+    return 'Text AI';
+  }
+
+  async function fetchAIFromServer() {
+    try {
+      const response = await fetch('http://localhost:5000/api/ai-tools');
+      if (!response.ok) throw new Error('Server returned ' + response.status);
+      const data = await response.json();
+      if (!Array.isArray(data)) throw new Error('Invalid data format');
+
+      const next = data.map((item, index) => ({
+        id: item.id || Date.now() + index,
+        name: item.name || 'Untitled AI',
+        desc: item.description || item.desc || 'No description available',
+        category: item.category || categorizeAITool(item.name),
+        release: item.date ? item.date.slice(0,10) : new Date().toISOString().slice(0,10),
+        source: item.url || item.source || '#',
+        popularity: item.popularity || 60,
+        trending: item.trending || 60,
+        createdAt: item.date || new Date().toISOString()
+      }));
+
+      aiTools = [...next];
+      aiTools.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+      saveData();
+      renderAITools();
+      updateOverview();
+      addActivity('AI discovery updated via backend', 'success');
+    } catch (err) {
+      console.warn('Backend AI fetch failed, using local data:', err.message);
+    }
+  }
+
+  function loadAITools() {
+    aiTools = JSON.parse(localStorage.getItem('aiTools') || '[]');
+    if (aiTools.length === 0) {
+      const now = new Date();
+      aiTools = [
+        {id:1,name:'GPT-Next',desc:'Multi-modal text and image model',category:'Text AI',release:'2026-03-10',source:'https://example.com/gpt-next',popularity:88,trending:93,createdAt:now.toISOString()},
+        {id:2,name:'StableImageX',desc:'High-res image generation with style controls',category:'Image Generation',release:'2026-03-05',source:'https://example.com/stableimagex',popularity:80,trending:75,createdAt:now.toISOString()},
+        {id:3,name:'VideoForge',desc:'AI-driven short video creation from scripts',category:'Video AI',release:'2026-03-18',source:'https://example.com/videoforge',popularity:72,trending:81,createdAt:now.toISOString()},
+        {id:4,name:'VoiceSynth Pro',desc:'Realistic voice cloning and TTS',category:'Voice AI',release:'2026-03-22',source:'https://example.com/voicesynth',popularity:81,trending:84,createdAt:now.toISOString()},
+        {id:5,name:'CodeAssist AI',desc:'Auto-complete/bug fix assistant for devs',category:'Developer Tools',release:'2026-03-15',source:'https://example.com/codeassist',popularity:90,trending:95,createdAt:now.toISOString()}
+      ];
+      saveData();
+    }
+    fetchAIFromServer();
+  }
+
+  function aggregateAIUpdates() {
+    // Simulate periodic aggregation from sources; in real platform, use APIs/web scraping
+    const newToolTemplates = [
+      {name:'MirrorGPT',desc:'Mirror prompts across tools and optimize performance',category:'Text AI',source:'https://example.com/mirrorgpt'},
+      {name:'ArtFlows',desc:'AI-driven animated image pipeline',category:'Image Generation',source:'https://example.com/artflows'},
+      {name:'StreamAI',desc:'Live video summarization and clip generation',category:'Video AI',source:'https://example.com/streamai'},
+      {name:'VoxEdge',desc:'On-device voice model for zero-latency conversation',category:'Voice AI',source:'https://example.com/voxedge'},
+      {name:'DevOpsGPT',desc:'Actionable deployment and infra AI assistant',category:'Developer Tools',source:'https://example.com/devopsgpt'}
+    ];
+
+    const missing = newToolTemplates.filter(t => !aiTools.some(a => a.name === t.name));
+    missing.forEach(t => {
+      const tool = {
+        id: aiTools.length ? Math.max(...aiTools.map(i=>i.id)) + 1 : 1,
+        name: t.name,
+        desc: t.desc,
+        category: t.category,
+        release: new Date().toISOString().slice(0,10),
+        source: t.source,
+        popularity: Math.floor(Math.random()*30)+60,
+        trending: Math.floor(Math.random()*30)+60,
+        createdAt: new Date().toISOString()
+      };
+      aiTools.push(tool);
+      addActivity(`New AI release found: ${tool.name}`, 'info');
+    });
+
+    aiTools.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+    saveData();
+    renderAITools();
+    updateOverview();
+  }
+
+  function updateOverview() {
+    if (!isPremium || !currentUser) return;
+
+    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
+    const activeSites = userSites.filter(site => site.status === 'connected');
+    const totalDataPoints = userSites.reduce((sum, site) => sum + (site.data.bugs || 0) + (site.data.features || 0), 0);
+    const lastSync = userSites.length > 0 ? Math.max(...userSites.map(site => new Date(site.data.lastSync).getTime())) : null;
+
+    document.getElementById('overview-sites').textContent = userSites.length;
+    document.getElementById('overview-active').textContent = activeSites.length;
+    document.getElementById('overview-sync').textContent = lastSync ? new Date(lastSync).toLocaleTimeString() : 'Never';
+    document.getElementById('overview-data').textContent = totalDataPoints;
+    document.getElementById('overview-ai').textContent = aiTools.length;
+
+    document.getElementById('welcome-name').textContent = currentUser.name || 'User';
+    document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
+  }
+
+  function renderAITools() {
+    const container = document.getElementById('ai-list');
+    const empty = document.getElementById('ai-empty');
+    const query = (document.getElementById('ai-search').value || '').toLowerCase();
+    const category = document.getElementById('ai-category').value;
+    const sort = document.getElementById('ai-sort').value;
+
+    let displayed = aiTools.slice();
+    if (category !== 'all') displayed = displayed.filter(t => t.category === category);
+    if (query) displayed = displayed.filter(t => t.name.toLowerCase().includes(query) || t.desc.toLowerCase().includes(query));
+
+    if (sort === 'newest') displayed.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+    if (sort === 'popular') displayed.sort((a,b)=> b.popularity - a.popularity);
+    if (sort === 'trending') displayed.sort((a,b)=> b.trending - a.trending);
+
+    if (!container) return;
+
+    container.innerHTML = '';
+    if (displayed.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    displayed.forEach(tool => {
+      const card = document.createElement('div');
+      card.className = 'ai-card';
+      card.innerHTML = `
+        <div class="ai-title">${tool.name}</div>
+        <div class="ai-meta">${tool.desc}</div>
+        <div class="ai-meta">Category: <strong>${tool.category}</strong> · Released: <strong>${tool.release}</strong></div>
+        <div class="ai-meta">Source: <a href="${tool.source}" target="_blank" class="ai-link">${tool.source}</a></div>
+        <div class="ai-trending">🔥 Popularity ${tool.popularity}% · Trending ${tool.trending}%</div>
+      `;
+      container.appendChild(card);
+    });
   }
 
   // Authentication
@@ -1437,6 +1640,8 @@
     });
     
     updateUI();
+    renderAITools();
+    updateOverview();
   }
 
   function syncSite(siteId) {
@@ -1870,6 +2075,7 @@
     document.getElementById('overview-active').textContent = activeSites.length;
     document.getElementById('overview-sync').textContent = lastSync ? new Date(lastSync).toLocaleTimeString() : 'Never';
     document.getElementById('overview-data').textContent = totalDataPoints;
+    document.getElementById('overview-ai').textContent = aiTools.length;
 
     document.getElementById('welcome-name').textContent = currentUser.name || 'User';
     document.getElementById('current-time').textContent = new Date().toLocaleTimeString();
