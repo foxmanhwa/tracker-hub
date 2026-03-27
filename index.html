@@ -504,373 +504,126 @@
   <!-- HOME TAB -->
   <div id="home-tab" class="tab-content active">
     <div class="hero animate-slideUp">
-      <div class="hero-eyebrow">Universal Tracking Platform <span class="hero-line"></span></div>
-      <h1>Track <span>anything.</span><br>Monitor everything.</h1>
-      <p class="hero-sub">Connect to any website, API, or service. Track bugs, features, system status, and performance metrics across all your favorite platforms — all in one dashboard.</p>
+      <div class="hero-eyebrow">AI Discovery Platform <span class="hero-line"></span></div>
+      <h1>Discover the Latest AI Tools & Models</h1>
+      <p class="hero-sub">Stay updated with the newest AI tools, models, and trends — all in one place. Find what's trending, save your favorites, and never miss an AI release.</p>
       <div class="hero-stats">
-        <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Compatible sites</div></div>
-        <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Data types</div></div>
-        <div class="stat"><div class="stat-num" id="connected-count">0</div><div class="stat-label">Connected sites</div></div>
-        <div class="stat"><div class="stat-num">Real-time</div><div class="stat-label">Updates</div></div>
+        <div class="stat"><div class="stat-num" id="hero-total">0</div><div class="stat-label">AI Tools</div></div>
+        <div class="stat"><div class="stat-num" id="hero-trending">0</div><div class="stat-label">Trending Now</div></div>
+        <div class="stat"><div class="stat-num" id="hero-saved">0</div><div class="stat-label">Bookmarked</div></div>
+        <div class="stat"><div class="stat-num">Real-time</div><div class="stat-label">Updated</div></div>
       </div>
     </div>
 
-    <!-- TRACKERS -->
-    <div class="tracker-section animate-fadeIn" data-cat="ai">
-      <div class="section-header">
-        <div class="section-bar" style="background:var(--cyan)"></div>
-        <h2>Live Trackers</h2>
-        <div class="section-divider"></div>
-        <span class="section-meta">1 active</span>
-      </div>
-
-      <div class="tracker-expanded">
-        <div class="tracker-exp-header">
-          <div class="exp-icon">�</div>
-          <div style="flex:1">
-            <div class="exp-title">Tracker Hub</div>
-            <div class="exp-sub">Universal tracking platform · trackerhub.com</div>
+    <!-- STATS CARDS -->
+    <div class="stats-section animate-slideUp" style="margin:40px 0">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total AI Tools</div>
           </div>
-          <span class="card-badge badge-live">Live</span>
         </div>
-        <div class="exp-body">
-          <div class="sub-section">
-            <div class="sub-header">
-              <div class="sub-bar" style="background:var(--cyan)"></div>
-              <span class="sub-title">System Health</span>
-            </div>
-            <div class="status-grid">
-              <div class="status-item">
-                <div class="sdot green"></div>
-                <span class="slabel">Inference API</span>
-                <span class="sstate green">OK</span>
-              </div>
-              <div class="status-item">
-                <div class="sdot green"></div>
-                <span class="slabel">Web UI / Studio</span>
-                <span class="sstate green">OK</span>
-              </div>
-              <div class="status-item">
-                <div class="sdot yellow"></div>
-                <span class="slabel">Voice Clone Pipeline</span>
-                <span class="sstate yellow">Degraded</span>
-              </div>
-              <div class="status-item">
-                <div class="sdot green"></div>
-                <span class="slabel">Discord Bot</span>
-                <span class="sstate green">OK</span>
-              </div>
-            </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-trending">0</div>
+            <div class="stat-label">Trending</div>
           </div>
-
-          <div class="sub-section">
-            <div class="sub-header">
-              <div class="sub-bar" style="background:var(--red)"></div>
-              <span class="sub-title">Active Bugs</span>
-            </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-saved">0</div>
+            <div class="stat-label">Your Watchlist</div>
           </div>
-
-          <div class="sub-section">
-            <div class="sub-header">
-              <div class="sub-bar" style="background:var(--purple)"></div>
-              <span class="sub-title">Feature Roadmap</span>
-            </div>
-            <div class="roadmap-mini">
-              <div class="rm-card">
-                <div class="rm-top">
-                  <div class="rm-title">Real-time Streaming API (WebSocket)</div>
-                  <span class="rm-phase phase-testing">Testing</span>
-                </div>
-                <div class="prog-head"><span class="prog-label">Progress</span><span class="prog-pct">80%</span></div>
-                <div class="prog-track"><div class="prog-bar bar-green" style="width:80%"></div></div>
-              </div>
-              <div class="rm-card">
-                <div class="rm-top">
-                  <div class="rm-title">Expanded Language Support (Hindi, Arabic, Swahili)</div>
-                  <span class="rm-phase phase-progress">In Progress</span>
-                </div>
-                <div class="prog-head"><span class="prog-label">Progress</span><span class="prog-pct">60%</span></div>
-                <div class="prog-track"><div class="prog-bar bar-cyan" style="width:60%"></div></div>
-              </div>
-              <div class="rm-card">
-                <div class="rm-top">
-                  <div class="rm-title">S3 Model Research &amp; Architecture</div>
-                  <span class="rm-phase phase-research">Research</span>
-                </div>
-                <div class="prog-head"><span class="prog-label">Progress</span><span class="prog-pct">35%</span></div>
-                <div class="prog-track"><div class="prog-bar bar-purple" style="width:35%"></div></div>
-              </div>
-              <div class="rm-card">
-                <div class="rm-top">
-                  <div class="rm-title">Emotion &amp; Prosody Control Parameters</div>
-                  <span class="rm-phase phase-planned">Planned</span>
-                </div>
-                <div class="prog-head"><span class="prog-label">Progress</span><span class="prog-pct">15%</span></div>
-                <div class="prog-track"><div class="prog-bar bar-orange" style="width:15%"></div></div>
-              </div>
-            </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-updated">--:--</div>
+            <div class="stat-label">Last Updated</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- COMING SOON -->
-    <div class="tracker-section animate-fadeIn" data-cat="all">
-      <div class="section-header">
-        <div class="section-bar" style="background:var(--border2)"></div>
-        <h2>Integration Examples</h2>
-        <div class="section-divider"></div>
-        <span class="section-meta">What you can connect</span>
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions-section" style="margin:40px 0;display:flex;gap:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="loadDashboard()" style="flex:1;min-width:150px">View All Tools</button>
+      <button class="btn btn-secondary" onclick="refreshAllData()" style="flex:1;min-width:150px">🔄 Refresh Data</button>
+      <button class="btn btn-secondary" onclick="switchTab('dashboard')" style="flex:1;min-width:150px">Your Watchlist</button>
+      <button class="btn btn-secondary" onclick="toggleNotifications()" style="flex:1;min-width:150px">🔔 Notifications</button>
+    </div>
+
+    <!-- LATEST AI TOOLS -->
+    <div id="latest-tools" style="margin:40px 0">
+      <div style="margin-bottom:24px">
+        <h2 style="font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text)">Latest AI Tools ✨</h2>
+        <p style="color:var(--text2);font-size:14px">Freshly added AI tools and models</p>
       </div>
-      <div class="coming-grid">
-        <div class="coming-card" data-cat="ai">
-          <div class="coming-icon">🤖</div>
-          <div class="coming-title">AI Platforms</div>
-          <div class="coming-sub">Connect to OpenAI, Anthropic, Hugging Face, or any AI service with API access.</div>
-        </div>
-        <div class="coming-card" data-cat="dev">
-          <div class="coming-icon">💻</div>
-          <div class="coming-title">Development Tools</div>
-          <div class="coming-sub">GitHub repos, Jira, Linear, Trello — track issues, features, and project status.</div>
-        </div>
-        <div class="coming-card" data-cat="gaming">
-          <div class="coming-icon">🎮</div>
-          <div class="coming-title">Gaming Platforms</div>
-          <div class="coming-sub">Steam, Epic Games, Discord servers — monitor updates, patches, and community status.</div>
-        </div>
-        <div class="coming-card" data-cat="web">
-          <div class="coming-icon">🌐</div>
-          <div class="coming-title">Web Services</div>
-          <div class="coming-sub">Any website with public APIs, status pages, or RSS feeds for comprehensive monitoring.</div>
-        </div>
-        <div class="coming-card" data-cat="social">
-          <div class="coming-icon">📱</div>
-          <div class="coming-title">Social Platforms</div>
-          <div class="coming-sub">Twitter, Reddit, Discord — track mentions, updates, and community discussions.</div>
-        </div>
-        <div class="coming-card" data-cat="custom">
-          <div class="coming-icon">🔧</div>
-          <div class="coming-title">Custom Integrations</div>
-          <div class="coming-sub">Build your own connectors or use our plugin system for specialized tracking needs.</div>
-        </div>
+      <div id="latest-list" class="ai-tools-grid"></div>
+      <div id="latest-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <h3>No tools loaded yet</h3>
+        <p>Check back soon or refresh to load the latest AI tools.</p>
+      </div>
+    </div>
+
+    <!-- TRENDING AI TOOLS -->
+    <div id="trending-tools" style="margin:40px 0">
+      <div style="margin-bottom:24px">
+        <h2 style="font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text)">Trending Now 🔥</h2>
+        <p style="color:var(--text2);font-size:14px">Most popular AI tools this week</p>
+      </div>
+      <div id="trending-list" class="ai-tools-grid"></div>
+      <div id="trending-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">📈</div>
+        <h3>No trending data yet</h3>
+        <p>Check back soon to see the most trending AI tools.</p>
+      </div>
+    </div>
+
+    <!-- ACTIVITY FEED -->
+    <div id="activity-section" style="margin:40px 0">
+      <div style="margin-bottom:24px">
+        <h2 style="font-size:24px;font-weight:700;margin-bottom:8px;color:var(--text)">Recent Activity 💬</h2>
+        <p style="color:var(--text2);font-size:14px">Updates on tools you're following</p>
+      </div>
+      <div id="activity-feed-main"></div>
+      <div id="activity-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <h3>No activity yet</h3>
+        <p>Follow your favorite AI tools to see updates here.</p>
       </div>
     </div>
   </div>
 
   <!-- DASHBOARD TAB -->
   <div id="dashboard-tab" class="tab-content">
-    <div class="premium-gate animate-slideUp" id="dashboard-gate">
-      <div class="gate-content">
-        <div class="gate-icon">🔒</div>
-        <h3>Premium Dashboard</h3>
-        <p>Access advanced analytics, website integration, and detailed reporting.</p>
-        <button class="premium-btn" onclick="showPaymentModal()">Upgrade to Premium</button>
-      </div>
-    </div>
-
-    <div id="dashboard-content" style="display:none;">
-      <!-- WELCOME SECTION -->
-      <div class="welcome-section animate-slideUp">
-        <div class="welcome-header">
-          <div>
-            <h1 class="welcome-title">Welcome back, <span id="welcome-name">User</span> 👋</h1>
-            <p class="welcome-subtitle">Here's what's happening with your tracked data today</p>
-          </div>
-          <div class="welcome-time">
-            <div class="time-display" id="current-time">Loading...</div>
-            <div class="time-label">Last updated</div>
-          </div>
-        </div>
+    <div id="watchlist-view" style="display:block;padding:0">
+      <div style="margin-bottom:40px">
+        <h1 style="font-size:32px;font-weight:700;margin-bottom:8px;color:var(--text)">Your Watchlist</h1>
+        <p style="color:var(--text2);font-size:16px">Tools you've saved for later</p>
       </div>
 
-      <!-- QUICK OVERVIEW -->
-      <div class="overview-section animate-slideUp">
-        <div class="overview-grid">
-          <div class="overview-card">
-            <div class="overview-icon">🌐</div>
-            <div class="overview-content">
-              <div class="overview-value" id="overview-sites">0</div>
-              <div class="overview-label">Connected Sites</div>
-            </div>
-          </div>
-          <div class="overview-card">
-            <div class="overview-icon">🟢</div>
-            <div class="overview-content">
-              <div class="overview-value" id="overview-active">0</div>
-              <div class="overview-label">Active Connections</div>
-            </div>
-          </div>
-          <div class="overview-card">
-            <div class="overview-icon">🔄</div>
-            <div class="overview-content">
-              <div class="overview-value" id="overview-sync">Never</div>
-              <div class="overview-label">Last Sync</div>
-            </div>
-          </div>
-          <div class="overview-card">
-            <div class="overview-icon">📊</div>
-            <div class="overview-content">
-              <div class="overview-value" id="overview-data">0</div>
-              <div class="overview-label">Data Points</div>
-            </div>
-          </div>
-          <div class="overview-card">
-            <div class="overview-icon">🤖</div>
-            <div class="overview-content">
-              <div class="overview-value" id="overview-ai">0</div>
-              <div class="overview-label">AI Tools Tracked</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI DISCOVERY PANEL -->
-      <div class="card animate-slideUp">
-        <div class="card-header">
-          <h2 class="card-title">AI Discovery Hub</h2>
-          <p class="card-subtitle">Newly released tools and trending models</p>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
-          <input id="ai-search" class="form-input" type="search" placeholder="Search AI tools..." oninput="renderAITools()" />
-          <select id="ai-category" class="form-input" onchange="renderAITools()">
-            <option value="all">All Categories</option>
-            <option value="Text AI">Text AI</option>
-            <option value="Image Generation">Image Generation</option>
-            <option value="Video AI">Video AI</option>
-            <option value="Voice AI">Voice AI</option>
-            <option value="Developer Tools">Developer Tools</option>
-          </select>
-          <select id="ai-sort" class="form-input" onchange="renderAITools()">
-            <option value="newest">Newest</option>
-            <option value="popular">Popular</option>
-            <option value="trending">Trending</option>
-          </select>
-        </div>
-        <div id="ai-list" class="ai-list"></div>
-        <div id="ai-empty" class="empty-state" style="display:none;">
-          <div class="empty-icon">🧠</div>
-          <h3>No AI tools found</h3>
-          <p>Try changing the search or filters to discover cool new AI releases.</p>
-        </div>
-      </div>
-
-      <!-- MAIN DASHBOARD GRID -->
-      <div class="dashboard-grid">
-        <!-- LEFT COLUMN -->
-        <div class="dashboard-left">
-          <!-- POPULAR AI TOOLS -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">Trending AI Tools</h2>
-              <p class="card-subtitle">Powered by backend popularity score</p>
-            </div>
-            <div id="popular-list" style="display:flex;flex-direction:column;gap:8px"></div>
-            <div id="popular-empty" class="empty-state" style="display:none;">
-              <div class="empty-icon">📈</div>
-              <h3>No trending tools yet</h3>
-              <p>Refresh soon for the latest trending AI tools.</p>
-            </div>
-          </div>
-
-          <!-- QUICK ACTIONS -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">Quick Actions</h2>
-            </div>
-            <div class="quick-actions">
-              <button class="action-btn primary" onclick="showAddSiteModal()">
-                <span class="action-icon">➕</span>
-                <span class="action-text">Connect New Website</span>
-              </button>
-              <button class="action-btn secondary" onclick="syncAllSites()">
-                <span class="action-icon">🔄</span>
-                <span class="action-text">Sync All Sites</span>
-              </button>
-              <button class="action-btn secondary" onclick="showReports()">
-                <span class="action-icon">📊</span>
-                <span class="action-text">View Reports</span>
-              </button>
-              <button class="action-btn secondary" onclick="showSettings()">
-                <span class="action-icon">⚙️</span>
-                <span class="action-text">Settings</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- CHART SECTION -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">Data Trends</h2>
-              <p class="card-subtitle">Last 7 days activity</p>
-            </div>
-            <div class="chart-container">
-              <canvas id="dataChart" width="400" height="200"></canvas>
-            </div>
-          </div>
-
-          <!-- CONNECTED SITES PREVIEW -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">Connected Websites</h2>
-              <p class="card-subtitle" id="sites-count">0 sites connected</p>
-            </div>
-            <div id="sites-preview">
-              <!-- Sites will be populated here -->
-            </div>
-            <div class="empty-state" id="sites-empty" style="display:none;">
-              <div class="empty-icon">🚀</div>
-              <h3>No websites connected yet</h3>
-              <p>Start tracking your data by connecting your first site.</p>
-              <button class="btn btn-primary" onclick="showAddSiteModal()">Connect Website</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN -->
-        <div class="dashboard-right">
-          <!-- RECENT ACTIVITY -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">Recent Activity</h2>
-              <p class="card-subtitle">Live system updates</p>
-            </div>
-            <div class="activity-feed" id="activity-feed">
-              <div class="activity-item">
-                <div class="activity-icon">🔄</div>
-                <div class="activity-content">
-                  <div class="activity-text">System initialized</div>
-                  <div class="activity-time">Just now</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SYSTEM STATUS -->
-          <div class="card animate-slideUp">
-            <div class="card-header">
-              <h2 class="card-title">System Status</h2>
-            </div>
-            <div class="status-indicators">
-              <div class="status-item">
-                <div class="status-dot green"></div>
-                <span class="status-label">API Services</span>
-                <span class="status-value">Operational</span>
-              </div>
-              <div class="status-item">
-                <div class="status-dot green"></div>
-                <span class="status-label">Data Processing</span>
-                <span class="status-value">Active</span>
-              </div>
-              <div class="status-item">
-                <div class="status-dot yellow"></div>
-                <span class="status-label">Background Sync</span>
-                <span class="status-value">Running</span>
-              </div>
-            </div>
-          </div>
+      <div id="watchlist-content">
+        <div id="watchlist-list" class="ai-tools-grid"></div>
+        <div id="watchlist-empty" class="empty-state">
+          <div class="empty-icon">🚀</div>
+          <h3>No saved tools yet</h3>
+          <p>Explore AI tools and save your favorites to build your personalized watchlist.</p>
+          <button class="btn btn-primary" onclick="switchTab('home')">Start Exploring</button>
         </div>
       </div>
     </div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN TAB -->
   </div>
 
   <!-- ADMIN TAB -->
@@ -1170,7 +923,7 @@
 
   async function fetchAIFromServer() {
     try {
-      const response = await fetch('http://localhost:5000/api/ai-tools');
+      const response = await fetch('/api/ai-tools');
       if (!response.ok) throw new Error('Server returned ' + response.status);
       const data = await response.json();
       if (!Array.isArray(data)) throw new Error('Invalid data format');
@@ -1263,13 +1016,13 @@
       const saved = watchlist.has(tool.id || tool._id);
       card.innerHTML = `
         <div class="ai-title">${tool.name}</div>
-        <div class="ai-meta">${tool.desc}</div>
-        <div class="ai-meta">Category: <strong>${tool.category}</strong> · Released: <strong>${tool.release}</strong></div>
-        <div class="ai-meta">Source: <a href="${tool.source}" target="_blank" class="ai-link" onclick="trackToolClick('${tool._id || tool.id}')">${tool.source}</a></div>
-        <div class="ai-trending">🔥 Popularity ${tool.popularity}% · Trending ${tool.trending}%</div>
+        <div class="ai-meta">${tool.desc || tool.description || ''}</div>
+        <div class="ai-meta">Category: <strong>${tool.category}</strong> · Released: <strong>${tool.release || 'TBD'}</strong></div>
+        <div class="ai-meta">Source: <a href="${tool.source || '#'}" target="_blank" class="ai-link" onclick="trackToolClick('${tool._id || tool.id}')">${tool.source || 'N/A'}</a></div>
+        <div class="ai-trending">🔥 Popularity ${tool.popularity || tool.score || 0}% · Trending ${tool.trending || 0}%</div>
         <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn ${saved ? 'btn-secondary' : 'btn-primary'}" onclick="${saved ? `removeFromWatchlist('${tool._id || tool.id}')` : `addToWatchlist('${tool._id || tool.id}')`}">${saved ? 'Saved' : 'Save'}</button>
-          <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}', '${tool.source.replace(/'/g, "\'")}')">Open</button>
+          <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}','${tool.source || '#'}')">Open</button>
         </div>
       `;
       if (!viewedTools.has(tool._id || tool.id)) {
@@ -1278,6 +1031,123 @@
       }
       container.appendChild(card);
     });
+
+    renderLatestTools();
+    renderWatchlist();
+    renderActivityFeed();
+    updateStats();
+  }
+
+  function renderLatestTools() {
+    const container = document.getElementById('latest-list');
+    const empty = document.getElementById('latest-empty');
+    if (!container) return;
+
+    const latest = [...aiTools].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    container.innerHTML = '';
+
+    if (latest.length === 0) {
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+    latest.slice(0, 12).forEach(tool => {
+      const card = document.createElement('div');
+      card.className = 'ai-card';
+      const saved = watchlist.has(tool.id || tool._id);
+      card.innerHTML = `
+        <div class="ai-title">${tool.name}</div>
+        <div class="ai-meta">${tool.desc || tool.description || ''}</div>
+        <div class="ai-meta">Category: <strong>${tool.category}</strong> · Release: <strong>${tool.release || 'TBD'}</strong></div>
+        <div class="ai-meta">Source: <a href="${tool.source || '#'}" target="_blank" class="ai-link" onclick="trackToolClick('${tool._id || tool.id}')">${tool.source || 'N/A'}</a></div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ${saved ? 'btn-secondary' : 'btn-primary'}" onclick="${saved ? `removeFromWatchlist('${tool._id || tool.id}')` : `addToWatchlist('${tool._id || tool.id}')`}">${saved ? 'Saved' : 'Save'}</button>
+          <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}','${tool.source || '#'}')">Open</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function renderWatchlist() {
+    const container = document.getElementById('watchlist-list');
+    const empty = document.getElementById('watchlist-empty');
+    if (!container) return;
+
+    const allTools = aiTools || [];
+    const selected = allTools.filter(tool => watchlist.has(tool._id || tool.id));
+    container.innerHTML = '';
+
+    if (selected.length === 0) {
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+    selected.forEach(tool => {
+      const card = document.createElement('div');
+      card.className = 'ai-card';
+      card.innerHTML = `
+        <div class="ai-title">${tool.name}</div>
+        <div class="ai-meta">${tool.desc || tool.description || ''}</div>
+        <div class="ai-meta">Category: <strong>${tool.category}</strong></div>
+        <div class="ai-meta">Score: <strong>${tool.popularity || tool.score || 0}</strong></div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-secondary" onclick="removeFromWatchlist('${tool._id || tool.id}')">Remove</button>
+          <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}','${tool.source || '#'}')">Open</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function renderActivityFeed() {
+    const container = document.getElementById('activity-feed-main');
+    const empty = document.getElementById('activity-empty');
+    if (!container) return;
+
+    if (!Array.isArray(notifications) || notifications.length === 0) {
+      if (empty) empty.style.display = 'block';
+      container.innerHTML = '';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+    container.innerHTML = notifications.map(note => `
+      <div class="activity-item">
+        <div class="activity-icon">${note.type === 'error' ? '⚠️' : note.type === 'success' ? '✅' : '🔔'}</div>
+        <div class="activity-content">
+          <div class="activity-text">${note.message}</div>
+          <div class="activity-time">${new Date(note.createdAt).toLocaleString()}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function updateStats() {
+    const total = aiTools.length || 0;
+    const trendingCount = aiTools.filter(t => (t.trending || t.popularity || 0) > 70).length;
+    const savedCount = watchlist.size;
+    const updateTime = new Date().toLocaleTimeString();
+
+    const heroTotal = document.getElementById('hero-total');
+    const heroTrending = document.getElementById('hero-trending');
+    const heroSaved = document.getElementById('hero-saved');
+    const statUpdated = document.getElementById('stat-updated');
+
+    if (heroTotal) heroTotal.textContent = total;
+    if (heroTrending) heroTrending.textContent = trendingCount;
+    if (heroSaved) heroSaved.textContent = savedCount;
+    if (statUpdated) statUpdated.textContent = updateTime;
+
+    const statTotal = document.getElementById('stat-total');
+    const statTrending = document.getElementById('stat-trending');
+    const statSaved = document.getElementById('stat-saved');
+
+    if (statTotal) statTotal.textContent = total;
+    if (statTrending) statTrending.textContent = trendingCount;
+    if (statSaved) statSaved.textContent = savedCount;
   }
 
   function openAiTool(toolId, url) {
@@ -1289,42 +1159,48 @@
 
   async function trackToolClick(toolId) {
     if (!toolId) return;
-    await fetch(`http://localhost:5000/api/ai-tools/${toolId}/click`, { method: 'POST' });
+    await fetch(`/api/ai-tools/${toolId}/click`, { method: 'POST' });
   }
 
   async function trackToolView(toolId) {
     if (!toolId) return;
-    await fetch(`http://localhost:5000/api/ai-tools/${toolId}/view`, { method: 'POST' });
+    await fetch(`/api/ai-tools/${toolId}/view`, { method: 'POST' });
   }
 
   async function fetchPopularAiTools() {
     try {
-      const response = await fetch('http://localhost:5000/api/ai-tools/popular');
+      const response = await fetch('/api/ai-tools/popular');
       if (!response.ok) throw new Error('Server returned ' + response.status);
       const data = await response.json();
-      const list = document.getElementById('popular-list');
-      const empty = document.getElementById('popular-empty');
+      const list = document.getElementById('trending-list');
+      const empty = document.getElementById('trending-empty');
 
       if (!list) return;
       list.innerHTML = '';
 
       if (!Array.isArray(data) || data.length === 0) {
-        empty.style.display = 'block';
+        if (empty) empty.style.display = 'block';
         return;
       }
 
-      empty.style.display = 'none';
-      data.slice(0, 8).forEach(tool => {
+      if (empty) empty.style.display = 'none';
+      data.slice(0, 12).forEach(tool => {
         const item = document.createElement('div');
         item.className = 'ai-card';
         item.innerHTML = `
           <div class="ai-title">${tool.name}</div>
-          <div class="ai-meta">${tool.description}</div>
-          <div class="ai-meta">Score: <strong>${tool.score?.toFixed(0) || 0}</strong> · Views: ${tool.views || 0} · Clicks: ${tool.clicks || 0} · Saves: ${tool.saves || 0}</div>
-          <button class="btn btn-secondary" style="margin-top:8px" onclick="addToWatchlist('${tool._id}')">Save</button>
+          <div class="ai-meta">${tool.description || tool.desc || ''}</div>
+          <div class="ai-meta">Score: <strong>${(tool.score || tool.popularity || 0).toFixed(0)}</strong> · Views: ${tool.views || 0} · Clicks: ${tool.clicks || 0} · Saves: ${tool.saves || 0}</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ${watchlist.has(tool._id || tool.id) ? 'btn-secondary' : 'btn-primary'}" onclick="${watchlist.has(tool._id || tool.id) ? `removeFromWatchlist('${tool._id || tool.id}')` : `addToWatchlist('${tool._id || tool.id}')`}">${watchlist.has(tool._id || tool.id) ? 'Saved' : 'Save'}</button>
+            <button class="btn btn-secondary" onclick="openAiTool('${tool._id || tool.id}','${tool.source || '#'}')">Open</button>
+          </div>
         `;
         list.appendChild(item);
       });
+
+      renderWatchlist();
+      updateStats();
     } catch (err) {
       console.warn('Cannot fetch popular AI tools:', err.message);
     }
@@ -1333,7 +1209,7 @@
   async function addToWatchlist(toolId) {
     if (!currentUser || !currentUser.id) { alert('Please login to save tools.'); return; }
     try {
-      await fetch('http://localhost:5000/api/watchlist/add', {
+      await fetch('/api/watchlist/add', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ userId: currentUser.id, toolId })
@@ -1351,7 +1227,7 @@
   async function removeFromWatchlist(toolId) {
     if (!currentUser || !currentUser.id) { alert('Please login to remove tools.'); return; }
     try {
-      await fetch('http://localhost:5000/api/watchlist/remove', {
+      await fetch('/api/watchlist/remove', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ userId: currentUser.id, toolId })
@@ -1369,7 +1245,7 @@
   async function loadWatchlist() {
     if (!currentUser || !currentUser.id) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/watchlist?userId=${encodeURIComponent(currentUser.id)}`);
+      const response = await fetch(`/api/watchlist?userId=${encodeURIComponent(currentUser.id)}`);
       if (!response.ok) throw new Error('Server returned ' + response.status);
       const data = await response.json();
       watchlist = new Set((data || []).map(t => t._id));
@@ -1383,7 +1259,7 @@
     if (!currentUser || !currentUser.id) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/notifications?userId=${encodeURIComponent(currentUser.id)}`);
+      const response = await fetch(`/api/notifications?userId=${encodeURIComponent(currentUser.id)}`);
       if (!response.ok) throw new Error('Server returned ' + response.status);
       notifications = await response.json();
 
@@ -1408,7 +1284,7 @@
     if (!currentUser || !currentUser.id) return;
 
     try {
-      await fetch('http://localhost:5000/api/notifications/read', {
+      await fetch('/api/notifications/read', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ userId: currentUser.id, notificationId })
@@ -1431,7 +1307,7 @@
   async function markAllNotificationsRead() {
     if (!currentUser || !currentUser.id) return;
     try {
-      await fetch('http://localhost:5000/api/notifications/read', {
+      await fetch('/api/notifications/read', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ userId: currentUser.id, all: true })
@@ -1598,26 +1474,22 @@
 
   // Tab Management
   function switchTab(tabName) {
+    if (tabName === 'admin' && (!currentUser || currentUser.role !== 'admin')) {
+      alert('Admin access required');
+      return;
+    }
+
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-    document.getElementById(`${tabName}-tab`).classList.add('active');
-    
+    const tabButton = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+    if (tabButton) tabButton.classList.add('active');
+
+    const tabContent = document.getElementById(`${tabName}-tab`);
+    if (tabContent) tabContent.classList.add('active');
+
     if (tabName === 'dashboard') {
-      if (!isPremium) {
-        document.getElementById('dashboard-gate').style.display = 'block';
-        document.getElementById('dashboard-content').style.display = 'none';
-      } else {
-        document.getElementById('dashboard-gate').style.display = 'none';
-        document.getElementById('dashboard-content').style.display = 'block';
-        loadDashboard();
-      }
-    }
-    
-    if (tabName === 'admin' && (!currentUser || currentUser.role !== 'admin')) {
-      switchTab('home');
-      alert('Admin access required');
+      loadDashboard();
     }
   }
 
@@ -1740,82 +1612,19 @@
   }
 
   function loadDashboard() {
-    if (!isPremium) return;
-    
-    const userSites = connectedSites.filter(site => site.userId === currentUser.id);
-    
-    document.getElementById('total-sites').textContent = userSites.length;
-    document.getElementById('total-bugs').textContent = userSites.reduce((sum, site) => sum + (site.tracking.bugs ? site.data.bugs : 0), 0);
-    
-    const sitesGrid = document.getElementById('sites-grid');
-    sitesGrid.innerHTML = '';
-    
-    if (userSites.length === 0) {
-      sitesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px;">No websites connected yet. Add your first site to start tracking!</div>';
-      return;
-    }
-    
-    userSites.forEach(site => {
-      const siteCard = document.createElement('div');
-      siteCard.className = 'card';
-      siteCard.innerHTML = `
-        <div class="card-header">
-          <div>
-            <h3 style="margin:0;font-size:16px">${site.name}</h3>
-            <p style="margin:4px 0;color:var(--text3);font-size:12px">${site.url}</p>
-            <p style="margin:2px 0;color:var(--text4);font-size:11px">Method: ${site.method.toUpperCase()} • Added: ${new Date(site.createdAt).toLocaleDateString()}</p>
-          </div>
-          <span class="status status-${site.status}">${site.status}</span>
-        </div>
-        
-        <div style="background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.2);border-radius:6px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2)">
-          <strong>⚠️ Data Disclaimer:</strong> Information from external sources may not be fully accurate. Always verify independently.
-        </div>
-        
-        <div class="grid grid-2" style="margin-bottom:16px">
-          ${site.tracking.bugs ? `
-            <div class="metric">
-              <div class="metric-value">${site.data.bugs}</div>
-              <div class="metric-label">Bugs</div>
-            </div>
-          ` : ''}
-          ${site.tracking.features ? `
-            <div class="metric">
-              <div class="metric-value">${site.data.features}</div>
-              <div class="metric-label">Features</div>
-            </div>
-          ` : ''}
-          ${site.tracking.status ? `
-            <div class="metric">
-              <div class="metric-value">${site.data.uptime}%</div>
-              <div class="metric-label">Uptime</div>
-            </div>
-          ` : ''}
-          <div class="metric">
-            <div class="metric-value">${site.data.confidence}%</div>
-            <div class="metric-label">Confidence</div>
-          </div>
-        </div>
-        
-        <div style="margin-bottom:12px;padding:8px;background:var(--bg4);border-radius:6px;font-size:12px;color:var(--text3)">
-          <div>Last sync: ${new Date(site.data.lastSync).toLocaleString()}</div>
-          <div>Status: ${site.status === 'connected' ? 'Active' : site.status === 'connecting' ? 'Connecting...' : 'Error'}</div>
-        </div>
-        
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-secondary" onclick="syncSite(${site.id})" ${site.status === 'syncing' ? 'disabled' : ''}>
-            ${site.status === 'syncing' ? 'Syncing...' : 'Sync Now'}
-          </button>
-          <button class="btn btn-primary" onclick="viewSiteReport(${site.id})">View Report</button>
-          <button class="btn btn-danger" onclick="removeSite(${site.id})">Remove</button>
-        </div>
-      `;
-      sitesGrid.appendChild(siteCard);
-    });
-    
-    updateUI();
+    // For AI Discovery view, load all content sections
+    fetchAIFromServer();
+    fetchPopularAiTools();
+    loadWatchlist();
+    fetchNotifications();
     renderAITools();
-    updateOverview();
+    renderLatestTools();
+    renderWatchlist();
+    renderActivityFeed();
+    updateStats();
+
+    // Ensure Home tab is visible
+    switchTab('home');
   }
 
   function syncSite(siteId) {
